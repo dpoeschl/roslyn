@@ -193,6 +193,26 @@ namespace Microsoft.CodeAnalysis.Editor.Shared.Extensions
                 exposedLineSpans: exposedLineSpans);
         }
 
+        public static IProjectionBuffer CreateProjectionBufferWithoutIndentation2(
+            this IProjectionBufferFactoryService factoryService,
+            IContentTypeRegistryService registryService,
+            IEditorOptions editorOptions,
+            ITextSnapshot snapshot,
+            ITextBufferFactoryService textBufferFactory,
+            object suffixOpt,
+            params LineSpan[] exposedLineSpans)
+        {
+            return CreateProjectionBuffer2(
+                factoryService,
+                registryService,
+                editorOptions,
+                snapshot,
+                textBufferFactory,
+                suffixOpt,
+                trim: true,
+                exposedLineSpans: exposedLineSpans);
+        }
+
         public static IProjectionBuffer CreatePreviewProjectionBuffer(
             this IProjectionBufferFactoryService factoryService,
             IList<object> sourceSpans,
@@ -286,6 +306,101 @@ namespace Microsoft.CodeAnalysis.Editor.Shared.Extensions
                 sourceSpans: spans,
                 options: ProjectionBufferOptions.None,
                 contentType: registryService.GetContentType(RoslynPreviewContentType));
+        }
+
+        private static IProjectionBuffer CreateProjectionBuffer2(
+            IProjectionBufferFactoryService factoryService,
+            IContentTypeRegistryService registryService,
+            IEditorOptions editorOptions,
+            ITextSnapshot snapshot,
+            ITextBufferFactoryService textBufferFactory,
+            object suffixOpt,
+            bool trim,
+            params LineSpan[] exposedLineSpans)
+        {
+            var spans = new List<object>();
+            if (exposedLineSpans.Length > 0)
+            {
+                if (exposedLineSpans[0].Start > 0)
+                {
+                    spans.Add(CreateEllipsis(textBufferFactory));
+                    spans.Add(CreateNewline(textBufferFactory));
+                }
+
+                var snapshotSpanRanges = CreateSnapshotSpanRanges(snapshot, exposedLineSpans);
+                var indentColumn = trim
+                    ? DetermineIndentationColumn(editorOptions, snapshotSpanRanges.Flatten())
+                    : 0;
+
+                foreach (var snapshotSpanRange in snapshotSpanRanges)
+                {
+                    foreach (var snapshotSpan in snapshotSpanRange)
+                    {
+                        var line = snapshotSpan.Snapshot.GetLineFromPosition(snapshotSpan.Start);
+                        var indentPosition = line.GetLineOffsetFromColumn(indentColumn, editorOptions) + line.Start;
+                        var mappedSpan = new SnapshotSpan(snapshotSpan.Snapshot,
+                            Span.FromBounds(indentPosition, snapshotSpan.End));
+
+                        var trackingSpan = mappedSpan.CreateTrackingSpan(SpanTrackingMode.EdgeExclusive);
+
+                        spans.Add(trackingSpan);
+
+                        // Add a newline between every line.
+                        if (snapshotSpan != snapshotSpanRange.Last())
+                        {
+                            spans.Add(CreateNewline(textBufferFactory));
+                        }
+                    }
+
+                    // Add a separator between every set of lines.
+                    if (snapshotSpanRange != snapshotSpanRanges.Last())
+                    {
+                        spans.Add(CreateNewline(textBufferFactory));
+                        spans.Add(CreateEllipsis(textBufferFactory));
+                        spans.Add(CreateNewline(textBufferFactory));
+                    }
+                }
+
+                if (snapshot.GetLineNumberFromPosition(snapshotSpanRanges.Last().Last().End) < snapshot.LineCount - 1)
+                {
+                    spans.Add(CreateNewline(textBufferFactory));
+                    spans.Add(CreateEllipsis(textBufferFactory));
+                }
+            }
+
+            if (suffixOpt != null)
+            {
+                if (spans.Count >= 0)
+                {
+                    if (!CreateEllipsis(textBufferFactory).Equals(spans.Last()))
+                    {
+                        spans.Add(CreateNewline(textBufferFactory));
+                        spans.Add(CreateEllipsis(textBufferFactory));
+                    }
+
+                    spans.Add(CreateNewline(textBufferFactory));
+                }
+
+                spans.Add(suffixOpt);
+            }
+
+            return factoryService.CreateProjectionBuffer(
+                projectionEditResolver: null,
+                sourceSpans: spans,
+                options: ProjectionBufferOptions.None,
+                contentType: registryService.GetContentType(RoslynPreviewContentType));
+        }
+
+        private static ITrackingSpan CreateEllipsis(ITextBufferFactoryService textBufferFactory)
+        {
+            var fillerTextBuffer = textBufferFactory.CreateTextBuffer("...", textBufferFactory.TextContentType);
+            return new SnapshotSpan(fillerTextBuffer.CurrentSnapshot, 0, 3).CreateTrackingSpan(SpanTrackingMode.EdgeExclusive);
+        }
+
+        private static ITrackingSpan CreateNewline(ITextBufferFactoryService textBufferFactory)
+        {
+            var fillerTextBuffer = textBufferFactory.CreateTextBuffer("\r\n", textBufferFactory.TextContentType);
+            return new SnapshotSpan(fillerTextBuffer.CurrentSnapshot, 0, 2).CreateTrackingSpan(SpanTrackingMode.EdgeExclusive);
         }
 
         private static IList<IList<SnapshotSpan>> CreateSnapshotSpanRanges(ITextSnapshot snapshot, LineSpan[] exposedLineSpans)

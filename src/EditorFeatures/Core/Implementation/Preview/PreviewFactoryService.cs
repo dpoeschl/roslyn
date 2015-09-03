@@ -478,19 +478,19 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Preview
                 return SpecializedTasks.Default<object>();
             }
 
-            var originalBuffer = _projectionBufferFactoryService.CreateProjectionBufferWithoutIndentation(
+            var originalBuffer = _projectionBufferFactoryService.CreateProjectionBufferWithoutIndentation2(
                 _contentTypeRegistryService,
                 _editorOptionsFactoryService.GlobalOptions,
                 oldBuffer.CurrentSnapshot,
-                "...",
+                _textBufferFactoryService,
                 description,
                 originalSpans.ToArray());
 
-            var changedBuffer = _projectionBufferFactoryService.CreateProjectionBufferWithoutIndentation(
+            var changedBuffer = _projectionBufferFactoryService.CreateProjectionBufferWithoutIndentation2(
                 _contentTypeRegistryService,
                 _editorOptionsFactoryService.GlobalOptions,
                 newBuffer.CurrentSnapshot,
-                "...",
+                _textBufferFactoryService,
                 description,
                 changedSpans.ToArray());
 
