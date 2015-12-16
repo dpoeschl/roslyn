@@ -566,6 +566,15 @@ namespace Microsoft.CodeAnalysis {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DaveMessage Alert.
+        /// </summary>
+        internal static string DaveMessage {
+            get {
+                return ResourceManager.GetString("DaveMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to delegate.
         /// </summary>
         internal static string Delegate {

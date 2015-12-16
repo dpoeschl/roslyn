@@ -882,4 +882,7 @@ Do you want to continue?</value>
   <data name="WRN_UnableToLoadAnalyzer" xml:space="preserve">
     <value>Unable to load Analyzer assembly {0}: {1}</value>
   </data>
+  <data name="DaveMessage" xml:space="preserve">
+    <value>DaveMessage Alert</value>
+  </data>
 </root>

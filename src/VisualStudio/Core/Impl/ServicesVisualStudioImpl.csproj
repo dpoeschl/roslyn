@@ -95,6 +95,11 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.GraphModel, Version=$(VisualStudioReferenceAssemblyVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+    <Reference Include="Microsoft.VisualStudio.ImageCatalog, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Language.CallHierarchy, Version=$(VisualStudioReferenceAssemblyVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=$(VisualStudioReferenceAssemblyVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>false</Private>
@@ -176,6 +181,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
@@ -319,10 +325,49 @@
     <Compile Include="Options\InternalOptionSerializer.cs" />
     <Compile Include="Options\PerLanguageOptionBinding.cs" />
     <Compile Include="Options\RadioButtonViewModel.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingPreferencesDialog.xaml.cs">
+      <DependentUpon>NamingPreferencesDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\NamingPreferences\NamingPreferencesDialogViewModel.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleDialogViewModel.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleTreeViewModel.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleViewModel.DragDropSourcePattern.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleViewModel.DragDropTargetPattern.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleViewModel.InteractionPatternProvider.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleViewModel.InvocationPattern.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleViewModel.RenamePattern.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleViewModel.TreeDisplayItem.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingRuleDialog.xaml.cs">
+      <DependentUpon>NamingRuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\NamingPreferences\NamingStyleViewModel.cs" />
+    <Compile Include="Options\Style\NamingPreferences\NamingStyleDialog.xaml.cs">
+      <DependentUpon>NamingStyleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\NamingPreferences\SymbolSpecificationDialog.xaml.cs">
+      <DependentUpon>SymbolSpecificationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\NamingPreferences\SymbolSpecificationViewModel.cs" />
     <Compile Include="RoslynVisualStudioWorkspace.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Options\OptionPreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\NamingPreferences\NamingPreferencesDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\NamingPreferences\NamingRuleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\NamingPreferences\NamingStyleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\NamingPreferences\SymbolSpecificationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
