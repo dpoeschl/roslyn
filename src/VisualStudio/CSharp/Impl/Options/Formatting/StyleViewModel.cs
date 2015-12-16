@@ -6,6 +6,15 @@ using Microsoft.CodeAnalysis.CSharp.CodeStyle;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Options;
+using System.Windows.Controls;
+using Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences;
+using Roslyn.Utilities;
+using System.IO;
+using System.Text;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
+using System.Xml;
+using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
 
 namespace Microsoft.VisualStudio.LanguageServices.CSharp.Options.Formatting
 {
@@ -105,6 +114,7 @@ class Program
     }
 //]
 }";
+        private readonly OptionSet _optionSet;
 
         internal StyleViewModel(OptionSet optionSet, IServiceProvider serviceProvider) : base(optionSet, serviceProvider, LanguageNames.CSharp)
         {
@@ -112,6 +122,43 @@ class Program
             Items.Add(new CheckBoxOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInDeclaration, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInDeclaration, s_intrinsicPreviewDeclarationTrue, s_intrinsicPreviewDeclarationFalse, this, optionSet));
             Items.Add(new CheckBoxOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInMemberAccess, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInMemberAccess, s_intrinsicPreviewMemberAccessTrue, s_intrinsicPreviewMemberAccessFalse, this, optionSet));
             Items.Add(new CheckBoxOptionViewModel(CSharpCodeStyleOptions.UseVarWhenDeclaringLocals, CSharpVSResources.UseVarWhenGeneratingLocals, s_varPreviewTrue, s_varPreviewFalse, this, optionSet));
+            var button = new Button();
+            button.Click += Button_Click;
+            button.Content = "Naming Styles";
+            Items.Add(button);
+            this._optionSet = optionSet;
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
+            var currentValue = Options.GetOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp);
+            SerializableNamingStylePreferencesInfo info;
+
+            if (string.IsNullOrEmpty(currentValue))
+            {
+                info = new SerializableNamingStylePreferencesInfo();
+            }
+            else
+            {
+                var reader = XmlReader.Create(new StringReader(currentValue));
+                info = ser.ReadObject(reader) as SerializableNamingStylePreferencesInfo;
+            }
+
+            var viewModel = new NamingPreferencesDialogViewModel(info);
+
+            var dialog = new NamingPreferencesDialog(viewModel);
+            var result = dialog.ShowModal();
+            if (result == true)
+            {
+                using (var output = new StringWriter())
+                using (var writer = new XmlTextWriter(output) { Formatting = System.Xml.Formatting.Indented })
+                {
+                    ser.WriteObject(writer, viewModel.GetInfo());
+                    var resultingXml = output.GetStringBuilder().ToString();
+                    Options = Options.WithChangedOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp, resultingXml);
+                }
+            }
         }
     }
 }

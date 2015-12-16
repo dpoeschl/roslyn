@@ -3,9 +3,11 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Utilities
 {
+    [DataContract]
     internal class AbstractNotifyPropertyChanged : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

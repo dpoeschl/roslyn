@@ -114,6 +114,7 @@
     <Compile Include="CodeFixes\ICodeFixProviderFactory.cs" />
     <Compile Include="CodeFixes\FixAllOccurrences\IFixAllGetFixesService.cs" />
     <Compile Include="CodeFixes\Iterator\AbstractIteratorCodeFixProvider.cs" />
+    <Compile Include="CodeFixes\NamingStyle\AbstractNamingStyleCodeFixProvider.cs" />
     <Compile Include="CodeFixes\PredefinedCodeFixProviderNames.cs" />
     <Compile Include="CodeFixes\RoslynAssemblyHelper.cs" />
     <Compile Include="CodeFixes\Suppression\AbstractSuppressionCodeFixProvider.IPragmaBasedCodeAction.cs" />
@@ -177,6 +178,14 @@
     <Compile Include="Completion\SuggestionMode\SuggestionModeCompletionProvider.cs" />
     <Compile Include="Diagnostics\AnalyzerHelper.cs" />
     <Compile Include="Diagnostics\AbstractHostDiagnosticUpdateSource.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Capitalization.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Serialization\NamingRule.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Serialization\NamingStyle.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Serialization\NamingStylePreferencesInfo.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Serialization\SerializableNamingRule.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Serialization\SerializableNamingStylePreferencesInfo.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\NamingStyleDiagnosticAnalyzerBase.cs" />
+    <Compile Include="Diagnostics\Analyzers\NamingStyle\Serialization\SymbolSpecification.cs" />
     <Compile Include="Diagnostics\AnalyzerUpdateArgsId.cs" />
     <Compile Include="Diagnostics\DiagnosticEventTaskScheduler.cs" />
     <Compile Include="Diagnostics\DiagnosticService_UpdateSourceRegistrationService.cs" />
