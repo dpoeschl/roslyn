@@ -161,6 +161,8 @@ namespace Microsoft.CodeAnalysis.CSharp.GenerateMember.GenerateVariable
             return type.ContainsAnonymousType() || (options.GetOption(CSharpCodeStyleOptions.UseVarWhenDeclaringLocals) && type.TypeKind != TypeKind.Delegate)
                 ? SyntaxFactory.IdentifierName("var")
                 : type.GenerateTypeSyntax();
+
+
         }
     }
 }

@@ -3,14 +3,17 @@
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.LanguageServices.Implementation.Options;
+using Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane;
 
 namespace Microsoft.VisualStudio.LanguageServices.CSharp.Options.Formatting
 {
+    [Guid(Guids.Yep)]
     internal class FormattingStylePage : AbstractOptionPage
     {
         protected override AbstractOptionPageControl CreateOptionPage(IServiceProvider serviceProvider)
         {
-            return new OptionPreviewControl(serviceProvider, (o, s) => new StyleViewModel(o, s));
+            var z = PreviewPane.ReadOnceParameter;
+            return new OptionPreviewControl(serviceProvider, (o, s) => new StyleViewModel(o, s, z));
         }
     }
 }

@@ -5,6 +5,9 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.CodeAnalysis.Options;
+using System.Windows.Data;
+using System.Globalization;
+using System.Windows.Media;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
 {
@@ -88,6 +91,25 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             {
                 this.ViewModel.Dispose();
             }
+        }
+    }
+
+    public class BooleanToBackgroundConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if ((bool)value)
+            {
+                {
+                    return new SolidColorBrush(Colors.LightYellow);
+                }
+            }
+            return new SolidColorBrush(Colors.White);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 }

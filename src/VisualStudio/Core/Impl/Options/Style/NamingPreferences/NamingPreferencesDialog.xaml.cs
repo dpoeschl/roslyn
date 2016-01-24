@@ -9,6 +9,7 @@ using System.Windows.Input;
 using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.ObjectModel;
 using Microsoft.Internal.VisualStudio.PlatformUI;
+using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
 {
@@ -109,15 +110,26 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             var a = SymbolSpecificationList.SelectedItem as SymbolSpecificationViewModel;
             if (a != null)
             {
-                _viewModel.DeleteNamingSpec(a);
+                _viewModel.DeleteSymbolSpec(a);
             }
         }
 
         private void Delete_2(object sender, RoutedEventArgs e)
         {
+            var a = NamingConventionList.SelectedItem as NamingStyleViewModel;
+            if (a != null)
+            {
+                _viewModel.DeleteNamingStyle(a);
+            }
         }
+
         private void Delete_3(object sender, RoutedEventArgs e)
         {
+            var a = RootTreeView.SelectedIndex;;
+            if (a > 0)
+            {
+                _viewModel.DeleteRuleAtIndex(a);
+            }
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
@@ -138,11 +150,28 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             var item = ((FrameworkElement)e.OriginalSource).DataContext as NamingStyleViewModel;
             if (item != null)
             {
-                var dialog = new NamingStyleDialog(item);
+                var style = item.GetNamingStyle();
+                var styleClone = new NamingStyle
+                {
+                    ID = style.ID,
+                    Name = style.Name,
+                    CapitalizationScheme = style.CapitalizationScheme,
+                    Prefix = style.Prefix,
+                    Suffix = style.Suffix,
+                    WordSeparator = style.WordSeparator
+                };
+
+                var itemClone = new NamingStyleViewModel(styleClone);
+
+                var dialog = new NamingStyleDialog(itemClone);
                 var result = dialog.ShowModal();
                 if (result == true)
                 {
-                    // Ugh.
+                    item.NamingConventionName = itemClone.NamingConventionName;
+                    item.RequiredPrefix = itemClone.RequiredPrefix;
+                    item.RequiredSuffix = itemClone.RequiredSuffix;
+                    item.WordSeparator = itemClone.WordSeparator;
+                    item.FirstWordGroupCapitalization = itemClone.FirstWordGroupCapitalization;
                 }
             }
         }
@@ -152,11 +181,16 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             var item = ((FrameworkElement)e.OriginalSource).DataContext as SymbolSpecificationViewModel;
             if (item != null)
             {
-                var dialog = new SymbolSpecificationDialog(item);
+                var itemClone = new SymbolSpecificationViewModel(item.GetSymbolSpecification());
+
+                var dialog = new SymbolSpecificationDialog(itemClone);
                 var result = dialog.ShowModal();
                 if (result == true)
                 {
-                    // Ugh.
+                    item.ModifierList = itemClone.ModifierList;
+                    item.SymbolKindList = itemClone.SymbolKindList;
+                    item.AccessibilityList = itemClone.AccessibilityList;
+                    item.SymbolSpecName = itemClone.SymbolSpecName;
                 }
             }
         }

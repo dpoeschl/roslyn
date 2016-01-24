@@ -62,6 +62,6 @@ namespace Microsoft.CodeAnalysis.Simplification
         /// <summary>
         /// This option says if we should prefer keyword for Intrinsic Predefined Types in Member Access Expression
         /// </summary>
-        internal static PerLanguageOption<string> NamingPreferences { get; } = new PerLanguageOption<string>(PerLanguageFeatureName, "NamingPreferences", defaultValue: "");
+        public static PerLanguageOption<string> NamingPreferences { get; } = new PerLanguageOption<string>(PerLanguageFeatureName, "NamingPreferences", defaultValue: "");
     }
 }

@@ -25,14 +25,18 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
         public Guid ID { get; internal set; }
 
-        public string NamingConventionName { get; set; }
+        private string _namingConventionName;
+        public string NamingConventionName
+        {
+            get { return _namingConventionName; }
+            set { SetProperty(ref _namingConventionName, value); }
+        }
 
         public string CurrentConfiguration
         {
             get
             {
-                var body = string.Join(_wordSeparator, style.CreateName(new[] { "test", "variable", "name" }));
-                return _requiredPrefix + body + _requiredSuffix;
+                return style.CreateName(new[] { "test", "variable", "name" });
             }
             set
             {

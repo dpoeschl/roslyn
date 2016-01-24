@@ -55,10 +55,17 @@ namespace Microsoft.CodeAnalysis.CodeFixes.FullyQualify
             var model = await document.GetSemanticModelAsync(context.CancellationToken).ConfigureAwait(false);
             var symbol = model.GetDeclaredSymbol(node, context.CancellationToken);
 
-            var fixedName = style.FixName(symbol.Name);
+            var fixedName = style.FixNameEasy(symbol.Name);
             var solution = context.Document.Project.Solution;
             var updatedSolution = await Rename.Renamer.RenameSymbolAsync(solution, symbol, fixedName, solution.Workspace.Options).ConfigureAwait(false);
             context.RegisterCodeFix(CodeAction.Create(string.Format("Fix Name Violation: {0}", fixedName), c => Task.FromResult(updatedSolution)), diagnostic);
+
+            string otherFixedName = style.FixName(symbol.Name);
+            if (otherFixedName != fixedName)
+            {
+                var updatedSolution2 = await Rename.Renamer.RenameSymbolAsync(solution, symbol, otherFixedName, solution.Workspace.Options).ConfigureAwait(false);
+                context.RegisterCodeFix(CodeAction.Create(string.Format("Fix Name Violation: {0}", otherFixedName), c => Task.FromResult(updatedSolution2)), diagnostic);
+            }
         }
     }
 }

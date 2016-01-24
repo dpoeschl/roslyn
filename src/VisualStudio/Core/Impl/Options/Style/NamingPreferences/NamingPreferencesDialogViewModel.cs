@@ -6,29 +6,24 @@ using Microsoft.VisualStudio.LanguageServices.Implementation.Utilities;
 using System.Windows.Input;
 using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
 using System;
+using System.Collections.ObjectModel;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
 {
     internal partial class NamingPreferencesDialogViewModel : AbstractNotifyPropertyChanged
     {
         public NamingRuleTreeViewModel _root;
-        public List<SymbolSpecificationViewModel> SymbolSpecificationList { get; set; }
-        public List<NamingStyleViewModel> NamingStyleList { get; set; }
+        public ObservableCollection<SymbolSpecificationViewModel> SymbolSpecificationList { get; set; }
+        public ObservableCollection<NamingStyleViewModel> NamingStyleList { get; set; }
 
         internal void AddSymbolSpec(SymbolSpecificationViewModel viewModel)
         {
-            var someList = new List<SymbolSpecificationViewModel>(SymbolSpecificationList);
-            someList.Add(viewModel);
-            SymbolSpecificationList = someList;
-            NotifyPropertyChanged(nameof(SymbolSpecificationList));
+            SymbolSpecificationList.Add(viewModel);
         }
 
         internal void AddNamingSpec(NamingStyleViewModel viewModel)
         {
-            var someList = new List<NamingStyleViewModel>(NamingStyleList);
-            someList.Add(viewModel);
-            NamingStyleList = someList;
-            NotifyPropertyChanged(nameof(NamingStyleList));
+            NamingStyleList.Add(viewModel);
         }
 
         public void AddNamingPreference(NamingRuleDialogViewModel viewModel)
@@ -52,8 +47,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
         internal NamingPreferencesDialogViewModel(SerializableNamingStylePreferencesInfo info)
         {
-            this.SymbolSpecificationList = info.SymbolSpecifications.Select(s => new SymbolSpecificationViewModel(s)).ToList();
-            this.NamingStyleList = info.NamingStyles.Select(s => new NamingStyleViewModel(s)).ToList();
+            this.SymbolSpecificationList = new ObservableCollection<SymbolSpecificationViewModel>(info.SymbolSpecifications.Select(s => new SymbolSpecificationViewModel(s)));
+            this.NamingStyleList = new ObservableCollection<NamingStyleViewModel>(info.NamingStyles.Select(s => new NamingStyleViewModel(s)));
             this._root = CreateRoot(info);
         }
 
@@ -147,10 +142,84 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
         }
 
-        internal void DeleteNamingSpec(SymbolSpecificationViewModel a)
+        internal void DeleteSymbolSpec(SymbolSpecificationViewModel a)
         {
-            SymbolSpecificationList.Remove(a);
-            NotifyPropertyChanged(nameof(SymbolSpecificationList));
+            if (!SymbolSpecUsedInTree(a))
+            {
+                SymbolSpecificationList.Remove(a);
+            }
         }
+
+        internal void DeleteNamingStyle(NamingStyleViewModel a)
+        {
+            if (!NamingStyleUsedInTree(a))
+            {
+                NamingStyleList.Remove(a);
+            }
+        }
+
+        internal void DeleteRuleAtIndex(int a)
+        {
+            var rule = GetRuleAtPosition(a);
+            if (rule != null)
+            {
+                DeleteRule(rule);
+            }
+        }
+
+        private NamingRuleTreeViewModel GetRuleAtPosition(int a)
+        {
+            Queue<NamingRuleTreeViewModel> q = new Queue<NamingRuleTreeViewModel>();
+            q.Enqueue(_root);
+
+            for (int i = 0; i <= a; i++)
+            {
+                var elementAtIndex = q.Dequeue();
+                if (i == a)
+                {
+                    return elementAtIndex;
+                }
+
+                if (elementAtIndex.HasChildren)
+                {
+                    foreach (var child in elementAtIndex.Children)
+                    {
+                        q.Enqueue(child);
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        internal void DeleteRule(NamingRuleTreeViewModel a)
+        {
+            if (!a.HasChildren && a.Parent != null)
+            {
+                a.Parent.Children.Remove(a);
+            }
+        }
+
+
+        private bool SymbolSpecUsedInTree(SymbolSpecificationViewModel a)
+        {
+            return _root.Children.Any(c => c.symbolSpec == a || SymbolSpecUsedInTree(a, c));
+        }
+
+        private bool SymbolSpecUsedInTree(SymbolSpecificationViewModel a, NamingRuleTreeViewModel c)
+        {
+            return c.Children.Any(child => child.symbolSpec == a || SymbolSpecUsedInTree(a, child));
+        }
+
+        private bool NamingStyleUsedInTree(NamingStyleViewModel a)
+        {
+            return _root.Children.Any(c => c.namingStyle == a || NamingStyleUsedInTree(a, c));
+        }
+
+        private bool NamingStyleUsedInTree(NamingStyleViewModel a, NamingRuleTreeViewModel c)
+        {
+            return c.Children.Any(child => child.namingStyle == a || NamingStyleUsedInTree(a, child));
+        }
+
     }
 }

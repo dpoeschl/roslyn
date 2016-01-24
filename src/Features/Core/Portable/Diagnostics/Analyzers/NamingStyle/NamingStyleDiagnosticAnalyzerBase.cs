@@ -44,59 +44,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
                 SerializableNamingStylePreferencesInfo viewModel = 
                     Deserialize(currentValue, typeof(SerializableNamingStylePreferencesInfo)) as SerializableNamingStylePreferencesInfo;
                 var preferencesInfo = viewModel.GetPreferencesInfo();
-                context.RegisterSymbolAction(a => Foo(a, preferencesInfo), SymbolKind.Field);
-            }
-            else
-            {
-                //var info = new NamingStylePreferencesInfo();
-                //info.NamingRules = new List<NamingRule>();
-
-                //var fieldspec = new SymbolSpecification()
-                //{
-                //    ID = Guid.NewGuid(),
-                //    SymbolKindList = new List<SymbolSpecification.SymbolKindOrTypeKind> { new SymbolSpecification.SymbolKindOrTypeKind(SymbolKind.Field) },
-                //    Name = "Whatever",
-                //    AccessibilityList = new List<SymbolSpecification.AccessibilityKind>(),
-                //    ModifierList = new List<SymbolSpecification.ModifierKind>()
-                //};
-
-                //var modifierKind = new SymbolSpecification.ModifierKind(DeclarationModifiers.Static);
-                //var staticfieldspec = new SymbolSpecification()
-                //{
-                //    ID = Guid.NewGuid(),
-                //    SymbolKindList = new List<SymbolSpecification.SymbolKindOrTypeKind> { new SymbolSpecification.SymbolKindOrTypeKind(SymbolKind.Field) },
-                //    Name = "Whatever",
-                //    AccessibilityList = new List<SymbolSpecification.AccessibilityKind>(),
-                //    ModifierList = new List<SymbolSpecification.ModifierKind> { modifierKind }
-                //};
-
-                //var staticstyle = new NamingStyle
-                //{
-                //    Name = "Whatever",
-                //    ID = Guid.NewGuid(),
-                //    CapitalizationScheme = Capitalization.CamelCase,
-                //    Prefix = "s_",
-                //    Suffix = "",
-                //    WordSeparator = ""
-                //};
-
-                //var staticrule = new NamingRule("Private Static Fields", new List<NamingRule>(), staticfieldspec, staticstyle);
-
-                //var fieldstyle = new NamingStyle
-                //{
-                //    Name = "Whatever",
-                //    ID = Guid.NewGuid(),
-                //    CapitalizationScheme = Capitalization.CamelCase,
-                //    Prefix = "_",
-                //    Suffix = "",
-                //    WordSeparator = ""
-                //};
-
-                //var fieldrule = new NamingRule("Private Fields", new List<NamingRule> { staticrule }, fieldspec, fieldstyle);
-
-                //info.NamingRules.Add(fieldrule);
-
-                //context.RegisterSymbolAction(a => Foo(a, info), SymbolKind.Field);
+                context.RegisterSymbolAction(
+                    a => Foo(a, preferencesInfo),
+                    Enum.GetValues(typeof(SymbolKind)).Cast<SymbolKind>().ToArray()); // Yuck
             }
         }
 
@@ -122,6 +72,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
                     var resultingXml = Serialize(applicableRule.NamingStyle);
                     var builder = ImmutableDictionary.CreateBuilder<string, string>();
                     builder[nameof(NamingStyle)] = resultingXml;
+                    builder["OptionsPageGuid"] = "13c3bbb4-f18f-4111-9f54-a0fb010d8888";
                     var diagnostic = Diagnostic.Create(descriptor, location, builder.ToImmutable());
                     context.ReportDiagnostic(diagnostic);
                 }
