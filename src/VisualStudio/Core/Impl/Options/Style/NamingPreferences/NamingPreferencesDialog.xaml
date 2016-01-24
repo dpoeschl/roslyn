@@ -13,16 +13,7 @@
     xmlns:s="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
     xmlns:naming="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences"
     mc:Ignorable="d" 
-    d:DesignHeight="500" d:DesignWidth="800"
-    Height="500" Width="800"
-    MinHeight="500" MinWidth="800"
-    FocusManager.FocusedElement="{Binding ElementName=interfaceNameTextBox}">
-    <!--Title="Naming Preferences"
-    HasHelpButton="True"
-    ResizeMode="CanResizeWithGrip"
-    ShowInTaskbar="False"
-    HasDialogFrame="True"
-    WindowStartupLocation="CenterOwner">-->
+    d:DesignHeight="500" d:DesignWidth="800">
     <Control.Resources>
         <Style TargetType="ListBoxItem">
             <Setter Property="IsTabStop" 
@@ -33,138 +24,125 @@
         <Thickness x:Key="selectDeselectButtonPadding">9,2,9,2</Thickness>
         <Thickness x:Key="textboxPadding">2</Thickness>
     </Control.Resources>
-    <StackPanel Orientation="Vertical">
-        <Label HorizontalAlignment="Left">Maybe some explanatory text goes here. Add Symbol Specifications and Naming Conventions, then combine them into Naming Rules!</Label>
-        <StackPanel Orientation="Horizontal" Height="400">
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label>Symbol Specification</Label>
-                    <Button Click="Button_Click">
-                        <imaging:CrispImage Name="UpArrowImage" 
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Left">Maybe some explanatory text goes here. Add Symbol Specifications and Naming Conventions, then combine them into Naming Rules!</Label>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="0">
+            <Label HorizontalAlignment="Center">Naming Rules</Label>
+            <Button Click="Button_Click_2">
+                <imaging:CrispImage Name="UpArrowImage445" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
-                    </Button>
-                    <Button Click="Delete_1">
-                        <imaging:CrispImage Name="UpArrowImage2" 
+            </Button>
+            <Button Click="Delete_3">
+                <imaging:CrispImage Name="UpArrowImage2555" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
-                    </Button>
-                </StackPanel>
-                <ListView x:Uid="SymbolSpecificationList"
+            </Button>
+        </StackPanel>
+        <vsi:PivotTreeView x:Name="RootTreeView"
+                                   BorderThickness="1"
+                                   BorderBrush="Gray"
+                                   Height="Auto" Width="Auto"
+                                   Margin="9"
+                           Grid.Row="2" Grid.Column="0" />
+            <!--                        SelectionMode="{Binding ElementName=SelectionMode, Path=SelectedItem}" 
+                                       ShowRootExpander="{Binding ElementName=ShowRootExpander, Path=IsChecked}"
+ -->
+        <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Click="Button_Click_2">
+            <imaging:CrispImage Name="UpArrowImage3" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.LeftArrowAsterisk}"></imaging:CrispImage>
+        </Button>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="2">
+            <Label>Symbol Specification</Label>
+            <Button Click="Button_Click">
+                <imaging:CrispImage Name="UpArrowImage" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
+            </Button>
+            <Button Click="Delete_1">
+                <imaging:CrispImage Name="UpArrowImage2" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
+            </Button>
+        </StackPanel>
+            <ListView x:Uid="SymbolSpecificationList"
                           x:Name="SymbolSpecificationList"
                           Margin="9"
+                          Grid.Row="2" Grid.Column="2" 
                           SelectionMode="Single"
                           MouseDoubleClick="SymbolSpecificationList_MouseDoubleClick"
                           ItemsSource="{Binding SymbolSpecificationList, Mode=TwoWay}"
                           HorizontalAlignment="Center"
-                          Height="350" Width="230">
-                    <ListView.InputBindings>
-                        <KeyBinding Key="Delete" Command="{Binding KeyCommand}" CommandParameter="{Binding SelectedItem}"></KeyBinding>
-                    </ListView.InputBindings>
-                    <ListView.ItemTemplate x:Uid="SelectableMemberListItem">
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Uid="SelectableMemberName" 
+                          Height="Auto" Width="Auto">
+                <ListView.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding KeyCommand}" CommandParameter="{Binding SelectedItem}"></KeyBinding>
+                </ListView.InputBindings>
+                <ListView.ItemTemplate x:Uid="SelectableMemberListItem">
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Uid="SelectableMemberName" 
                                                    Text="{Binding SymbolSpecName}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-            <imaging:CrispImage Name="UpArrowImage34" 
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        <imaging:CrispImage Grid.Row="1" Grid.Column="3" Name="UpArrowImage34" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.Add}" Grayscale="True"></imaging:CrispImage>
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label>Naming Convention</Label>
-                    <Button Click="Button_Click_1">
-                        <imaging:CrispImage Name="UpArrowImage5" 
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="4">
+            <Label>Naming Convention</Label>
+            <Button Click="Button_Click_1">
+                <imaging:CrispImage Name="UpArrowImage5" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
-                    </Button>
-                    <Button Click="Delete_2">
-                        <imaging:CrispImage Name="UpArrowImage255" 
+            </Button>
+            <Button Click="Delete_2">
+                <imaging:CrispImage Name="UpArrowImage255" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
-                    </Button>
-                </StackPanel>
-                <ListView x:Uid="NamingConventionList"
+            </Button>
+        </StackPanel>
+        <ListView x:Uid="NamingConventionList"
+                  Grid.Row="2"
+                  Grid.Column="4"
+                  Height="Auto"
                           x:Name="NamingConventionList"
                           Margin="9"
                           SelectionMode="Single"
                           ItemsSource="{Binding NamingStyleList, Mode=TwoWay}"
                           HorizontalAlignment="Center"
                           MouseDoubleClick="NamingConventionList_MouseDoubleClick"
-                          Height="350" Width="230">
-                    <ListView.ItemTemplate x:Uid="SelectableMemberListItem">
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Uid="SelectableMemberName" 
+                          Width="Auto">
+            <ListView.ItemTemplate x:Uid="SelectableMemberListItem">
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Uid="SelectableMemberName" 
                                                    Text="{Binding NamingConventionName}"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
-            <Button VerticalAlignment="Center" Click="Button_Click_2">
-                <imaging:CrispImage Name="UpArrowImage3" 
-                                        Height="16" 
-                                        Width="16" 
-                                        Moniker="{x:Static imagecatalog:KnownMonikers.ExpandRightGroup}"></imaging:CrispImage>
-            </Button>
-            <!--Grayscale="{Binding IsEnabled, ElementName=UpButton, Converter={StaticResource NegateBooleanConverter}}"/>-->
-
-            <StackPanel Orientation="Vertical">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Label HorizontalAlignment="Center">Naming Rules</Label>
-                    <Button Click="Button_Click_2">
-                        <imaging:CrispImage Name="UpArrowImage445" 
-                                        Height="16" 
-                                        Width="16" 
-                                        Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
-                    </Button>
-                    <Button Click="Delete_3">
-                        <imaging:CrispImage Name="UpArrowImage2555" 
-                                        Height="16" 
-                                        Width="16" 
-                                        Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
-                    </Button>
-                </StackPanel>
-                <vsi:PivotTreeView x:Name="RootTreeView"
-                                   BorderThickness="1"
-                                   BorderBrush="Gray"
-                                   Height="350" Width="230"
-                                   Margin="9"/>
-                <!--                        SelectionMode="{Binding ElementName=SelectionMode, Path=SelectedItem}" 
-                                       ShowRootExpander="{Binding ElementName=ShowRootExpander, Path=IsChecked}"
- -->
-            </StackPanel>
-        </StackPanel>
-        <!--<StackPanel Grid.Row="2" 
-                    HorizontalAlignment="Right" 
-                    Margin="0, 11, 0, 0"
-                    Orientation="Horizontal">
-            <Button x:Uid="OkButton"
-                    Click="OK_Click"
-                    Content="OK" 
-                    Margin="0, 0, 0, 0" 
-                    Padding="{StaticResource ResourceKey=okCancelButtonPadding}"
-                    IsDefault="True"
-                    MinWidth="73"
-                    MinHeight="21"/>
-            <Button x:Uid="CancelButton" 
-                    Click="Cancel_Click"
-                    Content="Cancel"
-                    Margin="7, 0, 0, 0" 
-                    Padding="{StaticResource ResourceKey=okCancelButtonPadding}"
-                    IsCancel="True"
-                    MinWidth="73"
-                    MinHeight="21"/>
-        </StackPanel>-->
-    </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <!--Grayscale="{Binding IsEnabled, ElementName=UpButton, Converter={StaticResource NegateBooleanConverter}}"/>-->
+    </Grid>
 </options:AbstractOptionPageControl>
