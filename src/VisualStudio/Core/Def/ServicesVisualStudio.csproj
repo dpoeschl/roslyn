@@ -59,18 +59,6 @@
     <Compile Include="Implementation\Library\VsNavInfo\NavInfoNode.cs" />
     <Compile Include="Implementation\Log\VisualStudioErrorLogger.cs" />
     <Compile Include="Implementation\AnalyzerDependency\MissingAnalyzerDependency.cs" />
-    <Compile Include="Implementation\Options\Style\NamingPreferences\NamingStyle.xaml.cs">
-      <DependentUpon>NamingStyle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Implementation\Options\Style\NamingPreferences\NamingStyle.cs" />
-    <Compile Include="Implementation\Options\Style\NamingPreferences\SymbolSpecificationViewModel.cs" />
-    <Compile Include="Implementation\Options\Style\NamingPreferences\SymbolSpecification.xaml.cs">
-      <DependentUpon>SymbolSpecification.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Implementation\Options\Style\NamingPreferences\NamingPreferences.xaml.cs">
-      <DependentUpon>NamingPreferences.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Implementation\Options\Style\NamingPreferences\NamingPreferencesViewModel.cs" />
     <Compile Include="Implementation\Preview\ReferenceChange.MetadataReferenceChange.cs" />
     <Compile Include="Implementation\Preview\ReferenceChange.AnalyzerReferenceChange.cs" />
     <Compile Include="Implementation\Preview\ReferenceChange.ProjectReferenceChange.cs" />
@@ -745,18 +733,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Implementation\Options\Style\NamingPreferences\NamingStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Implementation\Options\Style\NamingPreferences\SymbolSpecification.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Implementation\Options\Style\NamingPreferences\NamingPreferences.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Implementation\PreviewPane\PreviewPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -797,9 +773,7 @@
       <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Implementation\Options\Style\" />
-  </ItemGroup>
+  <ItemGroup />
   <ImportGroup Label="Targets">
     <Import Project="..\..\..\..\build\Targets\VSL.Imports.targets" />
   </ImportGroup>
