@@ -35,8 +35,6 @@ namespace OrgChart
         /// </summary>
         protected override void Initialize()
         {
-            ITextSnapshot snapshot = null;
-
             base.Initialize();
 
             OrgChartToolWindowPaneCommand.Initialize(this);

@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
                     var resultingXml = Serialize(applicableRule.NamingStyle);
                     var builder = ImmutableDictionary.CreateBuilder<string, string>();
                     builder[nameof(NamingStyle)] = resultingXml;
-                    builder["OptionsPageGuid"] = "13c3bbb4-f18f-4111-9f54-a0fb010d8888";
+                    builder["OptionsPageGuid"] = "8FD0B177-B244-AAAA-8E37-6FB7FFFFFFFF";
                     var diagnostic = Diagnostic.Create(descriptor, location, builder.ToImmutable());
                     context.ReportDiagnostic(diagnostic);
                 }
