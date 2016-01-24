@@ -22,17 +22,20 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
         private readonly string _id;
         private readonly bool _logIdVerbatimInTelemetry;
 
+        private readonly EnvDTE.DTE _dte;
+
         private bool _isExpanded;
         private double _heightForThreeLineTitle;
         private IWpfDifferenceViewer _previewDiffViewer;
 
         public PreviewPane(Image severityIcon, string id, string title, string description, Uri helpLink, string helpLinkToolTipText,
-            IList<object> previewContent, bool logIdVerbatimInTelemetry)
+            IList<object> previewContent, bool logIdVerbatimInTelemetry, EnvDTE.DTE dte, Guid targetGuid = default(Guid), string parameter = null)   
         {
             InitializeComponent();
 
             _id = id;
             _logIdVerbatimInTelemetry = logIdVerbatimInTelemetry;
+            _dte = dte;
 
             // Initialize header portion.
             if ((severityIcon != null) && !string.IsNullOrWhiteSpace(id) && !string.IsNullOrWhiteSpace(title))
@@ -56,6 +59,14 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
                 {
                     DescriptionParagraph.Inlines.Add(description);
                 }
+            }
+
+            _targetGuid = targetGuid;
+            _parameter = parameter;
+
+            if (targetGuid == default(Guid) || _dte == null)
+            {
+                OptionsButton.Visibility = Visibility.Collapsed;
             }
 
             // Initialize preview (i.e. diff view) portion.
@@ -247,8 +258,25 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
             }
         }
 
+        private static string _readOnceParameter;
+        public static string ReadOnceParameter
+        {
+            get
+            {
+                var hold = _readOnceParameter;
+                _readOnceParameter = null;
+                return hold;
+            }
+            private set
+            {
+                _readOnceParameter = value;
+            }
+        }
+
         #region IDisposable Implementation
         private bool _disposedValue = false;
+        private readonly Guid _targetGuid;
+        private readonly string _parameter;
 
         // VS editor will call Dispose at which point we should Close() the embedded IWpfDifferenceViewer.
         protected virtual void Dispose(bool disposing)
@@ -317,6 +345,15 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
                 DescriptionDockPanel.Visibility = Visibility.Collapsed;
 
                 _isExpanded = false;
+            }
+        }
+
+        private void OptionsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_targetGuid != default(Guid))
+            {
+                ReadOnceParameter = _parameter;
+                _dte.ExecuteCommand("Tools.Options", _targetGuid.ToString());
             }
         }
     }

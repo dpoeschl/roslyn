@@ -15,6 +15,7 @@ using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.Xml;
 using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
+using System.Windows.Media;
 
 namespace Microsoft.VisualStudio.LanguageServices.CSharp.Options.Formatting
 {
@@ -116,7 +117,7 @@ class Program
 }";
         private readonly OptionSet _optionSet;
 
-        internal StyleViewModel(OptionSet optionSet, IServiceProvider serviceProvider) : base(optionSet, serviceProvider, LanguageNames.CSharp)
+        internal StyleViewModel(OptionSet optionSet, IServiceProvider serviceProvider, string parameter = null) : base(optionSet, serviceProvider, LanguageNames.CSharp)
         {
             Items.Add(new CheckBoxOptionViewModel(SimplificationOptions.QualifyMemberAccessWithThisOrMe, CSharpVSResources.QualifyMemberAccessWithThis, s_declarationPreviewTrue, s_declarationPreviewFalse, this, optionSet));
             Items.Add(new CheckBoxOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInDeclaration, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInDeclaration, s_intrinsicPreviewDeclarationTrue, s_intrinsicPreviewDeclarationFalse, this, optionSet));
@@ -127,6 +128,25 @@ class Program
             button.Content = "Naming Styles";
             Items.Add(button);
             this._optionSet = optionSet;
+
+            int highlightIndex;
+            if (parameter != null && int.TryParse(parameter, out highlightIndex))
+            {
+                if (highlightIndex <= 4)
+                {
+                    var vm = Items[highlightIndex] as CheckBoxOptionViewModel;
+                    if (vm != null)
+                    {
+                        vm.IsHighlighted = true;
+                    }
+
+                    var highlightedButton = Items[highlightIndex] as Button;
+                    if (highlightedButton != null)
+                    {
+                        highlightedButton.Background = new SolidColorBrush(Colors.LightYellow);
+                    }
+                }
+            }
         }
 
         private void Button_Click(object sender, System.Windows.RoutedEventArgs e)

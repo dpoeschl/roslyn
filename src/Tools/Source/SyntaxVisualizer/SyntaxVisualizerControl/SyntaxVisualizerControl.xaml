@@ -5,13 +5,16 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vsi="clr-namespace:Microsoft.Internal.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="300">
     <Grid Margin="5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="0"/>
+            <RowDefinition Height="100"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Border Grid.Row="0" BorderThickness="1,1,1,0" BorderBrush="#FF828790" Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" >
@@ -112,5 +115,12 @@
             </Border>
             <WindowsFormsHost Grid.Row="1" Name="windowsFormsHost" Padding="5" />
         </Grid>
+        <Label Grid.Row="5" x:Name="CurrentSymbolDescription"></Label>
+        <vsi:PivotTreeView x:Name="RootTreeView"
+                                   Grid.Row="6"
+                                   BorderThickness="1"
+                                   BorderBrush="Gray"
+                                   Height="350" Width="230"
+                                   Margin="9"/>
     </Grid>
 </UserControl>

@@ -9,11 +9,11 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         public NamingRuleDialogViewModel(
             string name,
             SymbolSpecificationViewModel symbolSpecification,
-            List<SymbolSpecificationViewModel> symbolSpecificationList,
+            IList<SymbolSpecificationViewModel> symbolSpecificationList,
             NamingStyleViewModel namingStyle,
-            List<NamingStyleViewModel> namingStyleList,
+            IList<NamingStyleViewModel> namingStyleList,
             NamingRuleTreeViewModel parent,
-            List<NamingRuleTreeViewModel> allowableParentList)
+            IList<NamingRuleTreeViewModel> allowableParentList)
         {
             this.name = name;
 

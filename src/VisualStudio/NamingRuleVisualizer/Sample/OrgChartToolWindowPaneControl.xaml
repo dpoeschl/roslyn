@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="OrgChart.OrgChartToolWindowPaneControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:vss="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:vsi="clr-namespace:Microsoft.Internal.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             Background="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowBackgroundBrushKey}}"
+             Foreground="{DynamicResource {x:Static vs:EnvironmentColors.ToolWindowTextBrushKey}}"
+             Name="MyToolWindow">
+  <DockPanel>
+    <Grid DockPanel.Dock="Top" Margin="0,0,0,6">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+
+      <Label Content="Selection Mode"
+             VerticalAlignment="Center"
+             Margin="6,6,4,0" />
+      <ComboBox MinWidth="150"
+                VerticalAlignment="Center"
+                Margin="0,6,0,0"
+                HorizontalAlignment="Left"
+                Style="{DynamicResource {x:Static vss:VsResourceKeys.ComboBoxStyleKey}}"
+                SelectedIndex="2"
+                Grid.Column="1"
+                x:Name="SelectionMode">
+        <SelectionMode>Single</SelectionMode>
+        <SelectionMode>Multiple</SelectionMode>
+        <SelectionMode>Extended</SelectionMode>
+      </ComboBox>
+
+      <Label Content="Show Root Expander"
+             Grid.Row="1"
+             VerticalAlignment="Center"
+             Margin="6,2,4,0" />
+      <CheckBox Margin="0,2,0,0"
+                Style="{DynamicResource {x:Static vss:VsResourceKeys.CheckBoxStyleKey}}"
+                VerticalAlignment="Center"
+                Grid.Row="1"
+                Grid.Column="1"
+                x:Name="ShowRootExpander" />
+      
+    </Grid>
+
+    <Rectangle Height="1"
+               DockPanel.Dock="Top"
+               Fill="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarToolBarSeparatorBrushKey}}" />
+
+    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+      <Button Style="{DynamicResource {x:Static vss:VsResourceKeys.ButtonStyleKey}}"
+              Click="OnSelectPhilSpencerClicked"
+              Content="Select Phil Spencer" />
+      <Button Style="{DynamicResource {x:Static vss:VsResourceKeys.ButtonStyleKey}}"
+              Click="OnShowSelectionInfoClicked"
+              Content="Show Selection Info" />
+    </StackPanel>
+
+    <vsi:PivotTreeView x:Name="RootTreeView"
+                       ShowRootExpander="{Binding ElementName=ShowRootExpander, Path=IsChecked}"
+                       SelectionMode="{Binding ElementName=SelectionMode, Path=SelectedItem}" />
+  </DockPanel>
+</UserControl>

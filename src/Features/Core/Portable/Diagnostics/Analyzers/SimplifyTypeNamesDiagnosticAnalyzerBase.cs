@@ -111,7 +111,10 @@ namespace Microsoft.CodeAnalysis.Diagnostics.SimplifyTypeNames
             }
 
             var tree = model.SyntaxTree;
-            diagnostic = Diagnostic.Create(descriptor, tree.GetLocation(issueSpan));
+            var builder = ImmutableDictionary.CreateBuilder<string, string>();
+            builder["OptionsPageGuid"] = "13c3bbb4-f18f-4111-9f54-a0fb010d8888";
+            builder["OptionsPageParameter"] = "2";
+            diagnostic = Diagnostic.Create(descriptor, tree.GetLocation(issueSpan), builder.ToImmutable());
             return true;
         }
 

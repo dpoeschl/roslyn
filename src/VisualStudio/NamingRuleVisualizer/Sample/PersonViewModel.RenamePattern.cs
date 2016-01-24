@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
 
-namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
+namespace OrgChart.Sample
 {
-    partial class NamingRuleTreeViewModel : IRenamePattern
+    partial class PersonViewModel : IRenamePattern
     {
         public bool CanRename
         {
@@ -25,13 +24,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
         private class PersonRenameTransaction : RenameItemTransaction
         {
-            public PersonRenameTransaction(NamingRuleTreeViewModel viewModel, object container, Func<IRenameItemTransaction, IRenameItemValidationResult> validator)
+            public PersonRenameTransaction(PersonViewModel viewModel, object container, Func<IRenameItemTransaction, IRenameItemValidationResult> validator)
                 : base(viewModel, container, validator)
             {
                 this.RenameLabel = viewModel.Text;
                 this.Completed += (s, e) =>
                 {
-                    viewModel.Title = this.RenameLabel;
+                    viewModel.Name = this.RenameLabel;
                 };
             }
         }

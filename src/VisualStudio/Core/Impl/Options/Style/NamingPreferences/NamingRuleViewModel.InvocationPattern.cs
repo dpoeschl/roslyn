@@ -62,8 +62,29 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
                     var result = dialog.ShowModal();
                     if (result == true)
                     {
-                        // Ugh... viewModel.AddNamingPreference(viewModel);
+                        selectedRule.namingStyle = viewModel.NamingStyleList.GetItemAt(viewModel.NamingStyleIndex) as NamingStyleViewModel;
+                        selectedRule.symbolSpec = viewModel.SymbolSpecificationList.GetItemAt(viewModel.SelectedSymbolSpecificationIndex) as SymbolSpecificationViewModel;
+                        selectedRule.Title = viewModel.Title;
+
+                        if (viewModel.ParentRuleIndex == 0)
+                        {
+                            if (selectedRule.Parent != selectedRule.VM._root)
+                            {
+                                selectedRule.Parent.Children.Remove(selectedRule);
+                                selectedRule.VM._root.Children.Add(selectedRule);
+                            }
+                        }
+                        else
+                        {
+                            var newParent = viewModel.ParentRuleList.GetItemAt(viewModel.ParentRuleIndex) as NamingRuleTreeViewModel;
+                            if (newParent != selectedRule.Parent)
+                            {
+                                selectedRule.Parent.Children.Remove(selectedRule);
+                                newParent.Children.Add(selectedRule);
+                            }
+                        }
                     }
+
                     return true;
                 }
 

@@ -6,6 +6,7 @@ namespace Microsoft.VisualStudio.LanguageServices
 {
     internal static class Guids
     {
+        public const string Yep = "13c3bbb4-f18f-4111-9f54-a0fb010d8888";
         public const string CSharpPackageIdString = "13c3bbb4-f18f-4111-9f54-a0fb010d9194";
         public const string CSharpProjectIdString = "fae04ec0-301f-11d3-bf4b-00c04f79efbc";
         public const string CSharpLanguageServiceIdString = "694dd9b6-b865-4c5b-ad85-86356e9c88dc";

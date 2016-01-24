@@ -23,6 +23,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
         [DataMember]
         public Capitalization CapitalizationScheme { get; set; }
 
+        public IEnumerable<string> InferWordsTODO(string name)
+        {
+            throw new NotImplementedException();
+        }
+
         public string CreateName(IEnumerable<string> words)
         {
             EnsureNonNullProperties();
@@ -39,9 +44,9 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
                 case Capitalization.PascalCase:
                     return words.Select(w => CapitalizeFirstLetter(w));
                 case Capitalization.CamelCase:
-                    return words.Take(1).Concat(words.Skip(1).Select(w => CapitalizeFirstLetter(w)));
+                    return words.Take(1).Select(w => DecapitalizeFirstLetter(w)).Concat(words.Skip(1).Select(w => CapitalizeFirstLetter(w)));
                 case Capitalization.FirstUpper:
-                    return words.Take(1).Select(w => CapitalizeFirstLetter(w)).Concat(words.Skip(1));
+                    return words.Take(1).Select(w => CapitalizeFirstLetter(w)).Concat(words.Skip(1).Select(w => DecapitalizeFirstLetter(w)));
                 case Capitalization.AllUpper:
                     return words.Select(w => w.ToUpper());
                 case Capitalization.AllLower:
@@ -73,13 +78,19 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
                 return false;
             }
 
-            name = name.Substring(Prefix.Length);
             if (!name.EndsWith(Suffix))
             {
                 failureReason = string.Format("Missing suffix: '{0}'", Suffix);
                 return false;
             }
 
+            if (name.Length <= Prefix.Length + Suffix.Length)
+            {
+                failureReason = string.Empty;
+                return true;
+            }
+
+            name = name.Substring(Prefix.Length);
             name = name.Substring(0, name.Length - Suffix.Length);
 
             var words = new[] { name };
@@ -179,6 +190,29 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
             }
         }
 
+        public string FixNameEasy(string name)
+        {
+            EnsureNonNullProperties();
+
+            bool addPrefix = !name.StartsWith(Prefix);
+            bool addSuffix = !name.EndsWith(Suffix);
+
+            name = addPrefix ? (Prefix + name) : name;
+            name = addSuffix ? (name + Suffix) : name;
+
+            return FinishFixingName(name);
+        }
+
+        private string EnsureSuffixEasy(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        private string EnsurePrefixEasy(string name)
+        {
+            return name.StartsWith(Prefix) ? "" : "";
+        }
+
         public string FixName(string name)
         {
             EnsureNonNullProperties();
@@ -186,6 +220,11 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
             name = EnsurePrefix(name);
             name = EnsureSuffix(name);
 
+            return FinishFixingName(name);
+        }
+
+        private string FinishFixingName(string name)
+        {
             // Weird case, prefix "as" suffix "sa" name "asa" -- what do?
             if (Suffix.Length + Prefix.Length >= name.Length)
             {
@@ -210,7 +249,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers
             // If the name already ends with any prefix of the Suffix, only append the suffix of
             // the Suffix not contained in the longest such Suffix prefix.
 
-            for (int i = Suffix.Length - 1; i >= 0 ; i--)
+            for (int i = Suffix.Length; i > 0 ; i--)
             {
                 if (name.EndsWith(Suffix.Substring(0, i)))
                 {

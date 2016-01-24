@@ -32,6 +32,8 @@
   <ItemGroup>
     <InternalsVisibleTo Include="InteractiveHost" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.CSharp.EditorFeatures" />
+    <InternalsVisibleTo Include="Roslyn.SyntaxVisualizer.Extension" />
+    <InternalsVisibleTo Include="Roslyn.SyntaxVisualizer.Control" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.CSharp.Features" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.EditorFeatures" />
     <InternalsVisibleTo Include="Microsoft.CodeAnalysis.EditorFeatures.Text" />

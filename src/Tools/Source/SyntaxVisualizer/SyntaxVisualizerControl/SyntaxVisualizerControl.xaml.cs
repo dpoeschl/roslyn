@@ -1,11 +1,14 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences;
+using System.Collections.ObjectModel;
 
 namespace Roslyn.SyntaxVisualizer.Control
 {
@@ -185,7 +188,51 @@ namespace Roslyn.SyntaxVisualizer.Control
                 }
             }
 
+            if (matchFound)
+            {
+                var tag = (SyntaxTag)match.Tag;
+                if (tag != null && SemanticModel != null)
+                {
+                    var node = default(SyntaxNode);
+                    if (tag.Category == SyntaxCategory.SyntaxNode)
+                    {
+                        node = tag.SyntaxNode;
+                    }
+                    else if (tag.Category == SyntaxCategory.SyntaxToken)
+                    {
+                        node = tag.SyntaxToken.Parent;
+                    }
+
+                    if (node != default(SyntaxNode))
+                    {
+                        var symbol = SemanticModel.GetSymbolInfo(node).Symbol;
+                        if (symbol == null)
+                        {
+                            symbol = SemanticModel.GetDeclaredSymbol(node);
+                        }
+
+                        if (symbol == null)
+                        {
+                            symbol = SemanticModel.GetPreprocessingSymbolInfo(node).Symbol;
+                        }
+
+                        if (symbol != null)
+                        {
+                            this.CurrentSymbolDescription.Content = symbol.ToDisplayString();
+                        }
+                    }
+                }
+            }
+
             return matchFound;
+        }
+
+        private NamingRuleTreeViewModel _root;
+
+        public void SetNamingRuleRoot(NamingRuleTreeViewModel root)
+        {
+            _root = root;
+            RootTreeView.RootItemsSource = new ObservableCollection<NamingRuleTreeViewModel>() { _root };
         }
         #endregion
 

@@ -22,10 +22,16 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
     internal class SymbolSpecificationViewModel : AbstractNotifyPropertyChanged
     {
         public Guid ID { get; set; }
-        public string SymbolSpecName { get; set; }
         public List<SymbolKindViewModel> SymbolKindList { get; set; }
         public List<AccessibilityViewModel> AccessibilityList { get; set; }
         public List<ModifierViewModel> ModifierList { get; set; }
+
+        private string _symbolSpecName;
+        public string SymbolSpecName
+        {
+            get { return _symbolSpecName; }
+            set { SetProperty(ref _symbolSpecName, value); }
+        }
 
         public SymbolSpecificationViewModel() : this(new SymbolSpecification()) { }
 

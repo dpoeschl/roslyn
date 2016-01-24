@@ -14,7 +14,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 {
     public partial class NamingRuleTreeViewModel : ObservableObject
     {
-        internal NamingRuleTreeViewModel(string name)
+        public NamingRuleTreeViewModel(string name)
         {
             // TODO Remove constructor
             this.name = name;
@@ -48,7 +48,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         private readonly RuleSpecifierCollection children;
         private bool hasChildren;
 
-        internal readonly SymbolSpecificationViewModel symbolSpec;
+        internal SymbolSpecificationViewModel symbolSpec;
         internal NamingStyleViewModel namingStyle;
 
         public string EnforcementLevel { get; set; }
