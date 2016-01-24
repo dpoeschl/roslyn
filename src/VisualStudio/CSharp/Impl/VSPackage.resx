@@ -208,4 +208,11 @@
     <value>Style;Qualify;This;Code Style</value>
     <comment>C# Code Style options page keywords</comment>
   </data>
+  <data name="115" xml:space="preserve">
+    <value>Naming Style</value>
+  </data>
+  <data name="314" xml:space="preserve">
+    <value>Poeschl</value>
+    <comment>C# Naming Style options page keywords</comment>
+  </data>
 </root>

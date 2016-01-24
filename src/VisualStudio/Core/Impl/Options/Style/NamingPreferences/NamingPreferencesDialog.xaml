@@ -1,29 +1,29 @@
-﻿<vs:DialogWindow x:Uid="NamingPreferences"
-             x:Class="Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences.NamingPreferencesDialog"
-             x:ClassModifier="internal"
-             x:Name="dialog"
-             xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
-             xmlns:imagecatalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
-             xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-             xmlns:vsi="clr-namespace:Microsoft.Internal.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:s="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
-             xmlns:naming="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="800"
-             Height="500" Width="800"
-             MinHeight="500" MinWidth="800"
-             Title="Naming Preferences"
-             HasHelpButton="True"
-             FocusManager.FocusedElement="{Binding ElementName=interfaceNameTextBox}"
-             ResizeMode="CanResizeWithGrip"
-             ShowInTaskbar="False"
-             HasDialogFrame="True"
-             WindowStartupLocation="CenterOwner">
-    <Window.Resources>
+﻿<options:AbstractOptionPageControl
+    x:Class="Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences.NamingPreferencesDialog"
+    x:ClassModifier="internal"
+    xmlns:options="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options"
+    xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+    xmlns:imagecatalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+    xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+    xmlns:vsi="clr-namespace:Microsoft.Internal.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:s="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+    xmlns:naming="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences"
+    mc:Ignorable="d" 
+    d:DesignHeight="500" d:DesignWidth="800"
+    Height="500" Width="800"
+    MinHeight="500" MinWidth="800"
+    FocusManager.FocusedElement="{Binding ElementName=interfaceNameTextBox}">
+    <!--Title="Naming Preferences"
+    HasHelpButton="True"
+    ResizeMode="CanResizeWithGrip"
+    ShowInTaskbar="False"
+    HasDialogFrame="True"
+    WindowStartupLocation="CenterOwner">-->
+    <Control.Resources>
         <Style TargetType="ListBoxItem">
             <Setter Property="IsTabStop" 
                     Value="False" />
@@ -32,7 +32,7 @@
         <Thickness x:Key="okCancelButtonPadding">9,2,9,2</Thickness>
         <Thickness x:Key="selectDeselectButtonPadding">9,2,9,2</Thickness>
         <Thickness x:Key="textboxPadding">2</Thickness>
-    </Window.Resources>
+    </Control.Resources>
     <StackPanel Orientation="Vertical">
         <Label HorizontalAlignment="Left">Maybe some explanatory text goes here. Add Symbol Specifications and Naming Conventions, then combine them into Naming Rules!</Label>
         <StackPanel Orientation="Horizontal" Height="400">
@@ -91,7 +91,8 @@
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
-                    </Button>                </StackPanel>
+                    </Button>
+                </StackPanel>
                 <ListView x:Uid="NamingConventionList"
                           x:Name="NamingConventionList"
                           Margin="9"
@@ -122,18 +123,18 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <Label HorizontalAlignment="Center">Naming Rules</Label>
                     <Button Click="Button_Click_2">
-                            <imaging:CrispImage Name="UpArrowImage445" 
+                        <imaging:CrispImage Name="UpArrowImage445" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
-                        </Button>
-                        <Button Click="Delete_3">
-                            <imaging:CrispImage Name="UpArrowImage2555" 
+                    </Button>
+                    <Button Click="Delete_3">
+                        <imaging:CrispImage Name="UpArrowImage2555" 
                                         Height="16" 
                                         Width="16" 
                                         Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
-                        </Button>
-                    </StackPanel>
+                    </Button>
+                </StackPanel>
                 <vsi:PivotTreeView x:Name="RootTreeView"
                                    BorderThickness="1"
                                    BorderBrush="Gray"
@@ -144,7 +145,7 @@
  -->
             </StackPanel>
         </StackPanel>
-        <StackPanel Grid.Row="2" 
+        <!--<StackPanel Grid.Row="2" 
                     HorizontalAlignment="Right" 
                     Margin="0, 11, 0, 0"
                     Orientation="Horizontal">
@@ -164,6 +165,6 @@
                     IsCancel="True"
                     MinWidth="73"
                     MinHeight="21"/>
-        </StackPanel>
+        </StackPanel>-->
     </StackPanel>
-</vs:DialogWindow>
+</options:AbstractOptionPageControl>

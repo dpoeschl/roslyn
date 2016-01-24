@@ -123,62 +123,62 @@ class Program
             Items.Add(new CheckBoxOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInDeclaration, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInDeclaration, s_intrinsicPreviewDeclarationTrue, s_intrinsicPreviewDeclarationFalse, this, optionSet));
             Items.Add(new CheckBoxOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInMemberAccess, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInMemberAccess, s_intrinsicPreviewMemberAccessTrue, s_intrinsicPreviewMemberAccessFalse, this, optionSet));
             Items.Add(new CheckBoxOptionViewModel(CSharpCodeStyleOptions.UseVarWhenDeclaringLocals, CSharpVSResources.UseVarWhenGeneratingLocals, s_varPreviewTrue, s_varPreviewFalse, this, optionSet));
-            var button = new Button();
-            button.Click += Button_Click;
-            button.Content = "Naming Styles";
-            Items.Add(button);
-            this._optionSet = optionSet;
+            //var button = new Button();
+            //button.Click += Button_Click;
+            //button.Content = "Naming Styles";
+            //Items.Add(button);
+            //this._optionSet = optionSet;
 
-            int highlightIndex;
-            if (parameter != null && int.TryParse(parameter, out highlightIndex))
-            {
-                if (highlightIndex <= 4)
-                {
-                    var vm = Items[highlightIndex] as CheckBoxOptionViewModel;
-                    if (vm != null)
-                    {
-                        vm.IsHighlighted = true;
-                    }
+            //int highlightIndex;
+            //if (parameter != null && int.TryParse(parameter, out highlightIndex))
+            //{
+            //    if (highlightIndex <= 4)
+            //    {
+            //        var vm = Items[highlightIndex] as CheckBoxOptionViewModel;
+            //        if (vm != null)
+            //        {
+            //            vm.IsHighlighted = true;
+            //        }
 
-                    var highlightedButton = Items[highlightIndex] as Button;
-                    if (highlightedButton != null)
-                    {
-                        highlightedButton.Background = new SolidColorBrush(Colors.LightYellow);
-                    }
-                }
-            }
+            //        var highlightedButton = Items[highlightIndex] as Button;
+            //        if (highlightedButton != null)
+            //        {
+            //            highlightedButton.Background = new SolidColorBrush(Colors.LightYellow);
+            //        }
+            //    }
+            //}
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
-            var currentValue = Options.GetOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp);
-            SerializableNamingStylePreferencesInfo info;
+        //private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        //{
+        //    DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
+        //    var currentValue = Options.GetOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp);
+        //    SerializableNamingStylePreferencesInfo info;
 
-            if (string.IsNullOrEmpty(currentValue))
-            {
-                info = new SerializableNamingStylePreferencesInfo();
-            }
-            else
-            {
-                var reader = XmlReader.Create(new StringReader(currentValue));
-                info = ser.ReadObject(reader) as SerializableNamingStylePreferencesInfo;
-            }
+        //    if (string.IsNullOrEmpty(currentValue))
+        //    {
+        //        info = new SerializableNamingStylePreferencesInfo();
+        //    }
+        //    else
+        //    {
+        //        var reader = XmlReader.Create(new StringReader(currentValue));
+        //        info = ser.ReadObject(reader) as SerializableNamingStylePreferencesInfo;
+        //    }
 
-            var viewModel = new NamingPreferencesDialogViewModel(info);
+        //    var viewModel = new NamingPreferencesDialogViewModel(info);
 
-            var dialog = new NamingPreferencesDialog(viewModel);
-            var result = dialog.ShowModal();
-            if (result == true)
-            {
-                using (var output = new StringWriter())
-                using (var writer = new XmlTextWriter(output) { Formatting = System.Xml.Formatting.Indented })
-                {
-                    ser.WriteObject(writer, viewModel.GetInfo());
-                    var resultingXml = output.GetStringBuilder().ToString();
-                    Options = Options.WithChangedOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp, resultingXml);
-                }
-            }
-        }
+        //    var dialog = new NamingPreferencesDialog(viewModel);
+        //    var result = dialog.ShowModal();
+        //    if (result == true)
+        //    {
+        //        using (var output = new StringWriter())
+        //        using (var writer = new XmlTextWriter(output) { Formatting = System.Xml.Formatting.Indented })
+        //        {
+        //            ser.WriteObject(writer, viewModel.GetInfo());
+        //            var resultingXml = output.GetStringBuilder().ToString();
+        //            Options = Options.WithChangedOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp, resultingXml);
+        //        }
+        //    }
+        //}
     }
 }

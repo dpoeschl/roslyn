@@ -10,24 +10,44 @@ using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.ObjectModel;
 using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
+using Microsoft.CodeAnalysis.Simplification;
+using Microsoft.CodeAnalysis;
+using System.IO;
+using System.Xml;
+using System.Runtime.Serialization;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
 {
     /// <summary>
     /// Interaction logic for ExtractInterfaceDialog.xaml
     /// </summary>
-    internal partial class NamingPreferencesDialog : DialogWindow
+    internal partial class NamingPreferencesDialog : AbstractOptionPageControl
     {
         private readonly NamingPreferencesDialogViewModel _viewModel;
 
-        internal NamingPreferencesDialog(NamingPreferencesDialogViewModel viewModel)
-            : base(helpTopic: "TODO")
+        internal NamingPreferencesDialog(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
+            DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
+            var currentValue = this.OptionService.GetOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp);
+            SerializableNamingStylePreferencesInfo info;
+
+            if (string.IsNullOrEmpty(currentValue))
+            {
+                info = new SerializableNamingStylePreferencesInfo();
+            }
+            else
+            {
+                var reader = XmlReader.Create(new StringReader(currentValue));
+                info = ser.ReadObject(reader) as SerializableNamingStylePreferencesInfo;
+            }
+
+            var viewModel = new NamingPreferencesDialogViewModel(info);
             _viewModel = viewModel;
             // SetCommandBindings();
 
             InitializeComponent();
-            DataContext = viewModel;
+            this._viewModel = viewModel;
 
             this.RootTreeView.ItemsPath = nameof(NamingRuleTreeViewModel.Children);
             this.RootTreeView.IsExpandablePath = nameof(NamingRuleTreeViewModel.HasChildren);
@@ -132,18 +152,18 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
         }
 
-        private void OK_Click(object sender, RoutedEventArgs e)
-        {
-            if (_viewModel.TrySubmit())
-            {
-                DialogResult = true;
-            }
-        }
+        //private void OK_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (_viewModel.TrySubmit())
+        //    {
+        //        DialogResult = true;
+        //    }
+        //}
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
+        //private void Cancel_Click(object sender, RoutedEventArgs e)
+        //{
+        //    DialogResult = false;
+        //}
 
         private void NamingConventionList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {

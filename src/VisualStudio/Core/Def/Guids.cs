@@ -40,6 +40,7 @@ namespace Microsoft.VisualStudio.LanguageServices
 
         // option page guids from csharp\rad\pkg\guids.h
         public const string CSharpOptionPageAdvancedIdString = "8FD0B177-B244-4A97-8E37-6FB7B27DE3AF";
+        public const string CSharpOptionPageNamingStyleIdString = "8FD0B177-B244-AAAA-8E37-6FB7FFFFFFFF";
         public const string CSharpOptionPageIntelliSenseIdString = "EDE66829-7A36-4c5d-8E20-9290195DCF80";
         public const string CSharpOptionPageFormattingIdString = "3EB2CC0B-033E-4D75-B26A-B2362C25227E";
         public const string CSharpOptionPageFormattingIndentationIdString = "5E21D017-6D2A-4114-A1F1-C923F001CBBB";
