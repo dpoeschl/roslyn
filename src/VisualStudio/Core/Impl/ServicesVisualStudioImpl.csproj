@@ -325,6 +325,29 @@
     <Compile Include="Options\InternalOptionSerializer.cs" />
     <Compile Include="Options\PerLanguageOptionBinding.cs" />
     <Compile Include="Options\RadioButtonViewModel.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationDialog.xaml.cs">
+      <DependentUpon>ClassificationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\Colorization\ClassificaitonDialogViewModel.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationRuleDialog.xaml.cs">
+      <DependentUpon>ClassificationRuleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\Colorization\ClassificationRuleDialogViewModel.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.DragDropSourcePattern.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.DragDropTargetPattern.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.InteractionPatternProvider.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.InvocationPattern.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.RenamePattern.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleTreeViewModel.TreeDisplayItem.cs" />
+    <Compile Include="Options\Style\Colorization\ClassificationStyleDialog.xaml.cs">
+      <DependentUpon>ClassificationStyleDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\Colorization\ClassificationStyleViewModel.cs" />
+    <Compile Include="Options\Style\Colorization\SymbolSpecificationDialog.xaml.cs">
+      <DependentUpon>SymbolSpecificationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\Style\Colorization\SymbolSpecificationViewModel.cs" />
     <Compile Include="Options\Style\NamingPreferences\NamingPreferencesDialog.xaml.cs">
       <DependentUpon>NamingPreferencesDialog.xaml</DependentUpon>
     </Compile>
@@ -352,6 +375,22 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Options\OptionPreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\Colorization\ClassificationDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\Colorization\ClassificationRuleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\Colorization\ClassificationStyleDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\Style\Colorization\SymbolSpecificationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

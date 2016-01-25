@@ -35,6 +35,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
     [ProvideLanguageEditorToolsOptionCategory("CSharp", "Code Style", "#114")]
     [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(Options.NamingStylesOptionPage), "CSharp", @"Code Style", "Naming Style", pageNameResourceId: "#115", keywordListResourceId: 314)]
+    [ProvideLanguageEditorOptionPage(typeof(Options.ColorizationStyleOptionPage), "CSharp", @"Code Style", "Colorization Style", pageNameResourceId: "#115", keywordListResourceId: 314)] // TODO
     [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", @"Code Style", "General", pageNameResourceId: "#114", keywordListResourceId: 313)]
     [ProvideLanguageEditorOptionPage(typeof(Options.IntelliSenseOptionPage), "CSharp", null, "IntelliSense", pageNameResourceId: "#103", keywordListResourceId: 312)]
     [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingOptionPage), "CSharp", "Code Style\\Formatting", "General", pageNameResourceId: "#108", keywordListResourceId: 307)]

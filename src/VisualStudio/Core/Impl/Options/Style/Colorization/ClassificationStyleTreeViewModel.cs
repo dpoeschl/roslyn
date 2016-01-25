@@ -10,11 +10,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
+namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.Classification
 {
-    public partial class NamingRuleTreeViewModel : ObservableObject
+    public partial class ClassificationStyleTreeViewModel : ObservableObject
     {
-        public NamingRuleTreeViewModel(string name)
+        public ClassificationStyleTreeViewModel(string name)
         {
             // TODO Remove constructor
             this.name = name;
@@ -22,10 +22,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             this.children.CollectionChanged += OnChildrenCollectionChanged;
         }
 
-        internal NamingRuleTreeViewModel(
+        internal ClassificationStyleTreeViewModel(
             string name,
             SymbolSpecificationViewModel symbolSpec, 
-            NamingStyleViewModel namingStyle,
+            ClassificationStyleViewModel namingStyle,
             ClassificaitonDialogViewModel vm)
         {
             this.name = name;
@@ -44,12 +44,12 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             set { name = value; }
         }
 
-        private NamingRuleTreeViewModel parent;
+        private ClassificationStyleTreeViewModel parent;
         private readonly RuleSpecifierCollection children;
         private bool hasChildren;
 
         internal SymbolSpecificationViewModel symbolSpec;
-        internal NamingStyleViewModel namingStyle;
+        internal ClassificationStyleViewModel namingStyle;
 
         public string EnforcementLevel { get; set; }
 
@@ -62,7 +62,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
         }
 
-        public NamingRuleTreeViewModel Parent
+        public ClassificationStyleTreeViewModel Parent
         {
             get
             {
@@ -74,7 +74,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
         }
 
-        public IList<NamingRuleTreeViewModel> Children
+        public IList<ClassificationStyleTreeViewModel> Children
         {
             get { return this.children; }
         }
@@ -111,9 +111,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             this.HasChildren = this.children.Count > 0;
         }
 
-        public bool IsAncestorOfMe(NamingRuleTreeViewModel rule)
+        public bool IsAncestorOfMe(ClassificationStyleTreeViewModel rule)
         {
-            NamingRuleTreeViewModel potentialAncestor = rule.Parent;
+            var potentialAncestor = rule.Parent;
             while (potentialAncestor != null)
             {
                 if (potentialAncestor == this)
@@ -127,21 +127,21 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             return false;
         }
 
-        private class RuleSpecifierCollection : ObservableCollection<NamingRuleTreeViewModel>
+        private class RuleSpecifierCollection : ObservableCollection<ClassificationStyleTreeViewModel>
         {
-            private readonly NamingRuleTreeViewModel owner;
+            private readonly ClassificationStyleTreeViewModel owner;
 
             public RuleSpecifierCollection() : this(null)
             {
 
             }
 
-            public RuleSpecifierCollection(NamingRuleTreeViewModel owner)
+            public RuleSpecifierCollection(ClassificationStyleTreeViewModel owner)
             {
                 this.owner = owner;
             }
 
-            protected override void InsertItem(int index, NamingRuleTreeViewModel item)
+            protected override void InsertItem(int index, ClassificationStyleTreeViewModel item)
             {
                 base.InsertItem(index, item);
                 this.TakeOwnership(item);
@@ -149,14 +149,14 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
             protected override void RemoveItem(int index)
             {
-                NamingRuleTreeViewModel item = this[index];
+                var item = this[index];
                 base.RemoveItem(index);
                 this.LoseOwnership(item);
             }
 
-            protected override void SetItem(int index, NamingRuleTreeViewModel item)
+            protected override void SetItem(int index, ClassificationStyleTreeViewModel item)
             {
-                NamingRuleTreeViewModel oldItem = this[index];
+                var oldItem = this[index];
                 base.SetItem(index, item);
                 this.LoseOwnership(oldItem);
                 this.TakeOwnership(item);
@@ -164,20 +164,20 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
             protected override void ClearItems()
             {
-                List<NamingRuleTreeViewModel> list = new List<NamingRuleTreeViewModel>(this);
+                var list = new List<ClassificationStyleTreeViewModel>(this);
                 base.ClearItems();
-                foreach (NamingRuleTreeViewModel item in list)
+                foreach (var item in list)
                 {
                     this.LoseOwnership(item);
                 }
             }
 
-            private void TakeOwnership(NamingRuleTreeViewModel item)
+            private void TakeOwnership(ClassificationStyleTreeViewModel item)
             {
                 item.Parent = this.owner;
             }
 
-            private void LoseOwnership(NamingRuleTreeViewModel item)
+            private void LoseOwnership(ClassificationStyleTreeViewModel item)
             {
                 item.Parent = null;
             }

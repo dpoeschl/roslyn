@@ -16,16 +16,16 @@ using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
 
-namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
+namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.Classification
 {
     /// <summary>
     /// Interaction logic for ExtractInterfaceDialog.xaml
     /// </summary>
-    internal partial class NamingPreferencesDialog : AbstractOptionPageControl
+    internal partial class ClassificaitonDialog : AbstractOptionPageControl
     {
         private readonly ClassificaitonDialogViewModel _viewModel;
 
-        internal NamingPreferencesDialog(IServiceProvider serviceProvider)
+        internal ClassificaitonDialog(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
             DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
@@ -49,25 +49,25 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             InitializeComponent();
             this._viewModel = viewModel;
 
-            this.RootTreeView.ItemsPath = nameof(NamingRuleTreeViewModel.Children);
-            this.RootTreeView.IsExpandablePath = nameof(NamingRuleTreeViewModel.HasChildren);
+            this.RootTreeView.ItemsPath = nameof(ClassificationStyleTreeViewModel.Children);
+            this.RootTreeView.IsExpandablePath = nameof(ClassificationStyleTreeViewModel.HasChildren);
             this.RootTreeView.FilterParentEvaluator = GetParent;
-            this.RootTreeView.RootItemsSource = new ObservableCollection<NamingRuleTreeViewModel>() { viewModel._root };
+            this.RootTreeView.RootItemsSource = new ObservableCollection<ClassificationStyleTreeViewModel>() { viewModel._root };
       }
 
         private IEnumerable<object> GetParent(object item)
         {
-            NamingRuleTreeViewModel viewModel = item as NamingRuleTreeViewModel;
+            ClassificationStyleTreeViewModel viewModel = item as ClassificationStyleTreeViewModel;
             if (viewModel != null && viewModel.Parent != null)
             {
                 yield return viewModel.Parent;
             }
         }
 
-        private void EnsureAncestorsExpanded(NamingRuleTreeViewModel item)
+        private void EnsureAncestorsExpanded(ClassificationStyleTreeViewModel item)
         {
-            Stack<NamingRuleTreeViewModel> models = new Stack<NamingRuleTreeViewModel>();
-            NamingRuleTreeViewModel iter = item.Parent;
+            var models = new Stack<ClassificationStyleTreeViewModel>();
+            var iter = item.Parent;
             while (iter != null)
             {
                 models.Push(iter);
@@ -76,7 +76,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
             while (models.Count > 0)
             {
-                NamingRuleTreeViewModel manager = models.Pop();
+                var manager = models.Pop();
                 IVirtualizingTreeNode managerNode = this.RootTreeView.GetFirstTreeNode(manager);
                 managerNode.IsExpanded = true;
             }
@@ -95,8 +95,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var viewModel = new NamingStyleViewModel(new CodeAnalysis.Diagnostics.Analyzers.NamingStyle { ID = Guid.NewGuid() });
-            var dialog = new NamingStyleDialog(viewModel);
+            var viewModel = new ClassificationStyleViewModel(new CodeAnalysis.Diagnostics.Analyzers.NamingStyle { ID = Guid.NewGuid() });
+            var dialog = new ClassificationStyleDialog(viewModel);
             var result = dialog.ShowModal();
             if (result == true)
             {
@@ -107,9 +107,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             var selectedSpecification = SymbolSpecificationList.SelectedItem as SymbolSpecificationViewModel;
-            var selectedStyle = NamingConventionList.SelectedItem as NamingStyleViewModel;
+            var selectedStyle = NamingConventionList.SelectedItem as ClassificationStyleViewModel;
 
-            var viewModel = new NamingRuleDialogViewModel(
+            var viewModel = new ClassificationRuleDialogViewModel(
                 string.Empty,
                 selectedSpecification,
                 _viewModel.SymbolSpecificationList,
@@ -117,7 +117,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
                 _viewModel.NamingStyleList,
                 null,
                 _viewModel.CreateAllowableParentList(_viewModel._root));
-            var dialog = new NamingRuleDialog(viewModel);
+            var dialog = new ClassificationRuleDialog(viewModel);
             var result = dialog.ShowModal();
             if (result == true)
             {
@@ -136,7 +136,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
         private void Delete_2(object sender, RoutedEventArgs e)
         {
-            var a = NamingConventionList.SelectedItem as NamingStyleViewModel;
+            var a = NamingConventionList.SelectedItem as ClassificationStyleViewModel;
             if (a != null)
             {
                 _viewModel.DeleteNamingStyle(a);
@@ -167,7 +167,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
 
         private void NamingConventionList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var item = ((FrameworkElement)e.OriginalSource).DataContext as NamingStyleViewModel;
+            var item = ((FrameworkElement)e.OriginalSource).DataContext as ClassificationStyleViewModel;
             if (item != null)
             {
                 var style = item.GetNamingStyle();
@@ -181,9 +181,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
                     WordSeparator = style.WordSeparator
                 };
 
-                var itemClone = new NamingStyleViewModel(styleClone);
+                var itemClone = new ClassificationStyleViewModel(styleClone);
 
-                var dialog = new NamingStyleDialog(itemClone);
+                var dialog = new ClassificationStyleDialog(itemClone);
                 var result = dialog.ShowModal();
                 if (result == true)
                 {

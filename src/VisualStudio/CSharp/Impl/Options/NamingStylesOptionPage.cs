@@ -18,7 +18,27 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.Options
     {
         protected override AbstractOptionPageControl CreateOptionPage(IServiceProvider serviceProvider)
         {
-            DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
+            return new NamingPreferencesDialog(serviceProvider);
+
+            //var result = dialog.ShowModal();
+            //if (result == true)
+            //{
+            //    using (var output = new StringWriter())
+            //    using (var writer = new XmlTextWriter(output) { Formatting = System.Xml.Formatting.Indented })
+            //    {
+            //        ser.WriteObject(writer, viewModel.GetInfo());
+            //        var resultingXml = output.GetStringBuilder().ToString();
+            //        Options = Options.WithChangedOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp, resultingXml);
+            //    }
+            //}
+        }
+    }
+
+    [Guid(Guids.CSharpOptionPageColorizationStyleIdString)]
+    internal class ColorizationStyleOptionPage : AbstractOptionPage
+    {
+        protected override AbstractOptionPageControl CreateOptionPage(IServiceProvider serviceProvider)
+        {
             return new NamingPreferencesDialog(serviceProvider);
 
             //var result = dialog.ShowModal();

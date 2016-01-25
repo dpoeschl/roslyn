@@ -8,30 +8,30 @@ using Microsoft.CodeAnalysis.Diagnostics.Analyzers;
 using System;
 using System.Collections.ObjectModel;
 
-namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences
+namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.Classification
 {
     internal partial class ClassificaitonDialogViewModel : AbstractNotifyPropertyChanged
     {
-        public NamingRuleTreeViewModel _root;
+        public ClassificationStyleTreeViewModel _root;
         public ObservableCollection<SymbolSpecificationViewModel> SymbolSpecificationList { get; set; }
-        public ObservableCollection<NamingStyleViewModel> NamingStyleList { get; set; }
+        public ObservableCollection<ClassificationStyleViewModel> NamingStyleList { get; set; }
 
         internal void AddSymbolSpec(SymbolSpecificationViewModel viewModel)
         {
             SymbolSpecificationList.Add(viewModel);
         }
 
-        internal void AddNamingSpec(NamingStyleViewModel viewModel)
+        internal void AddNamingSpec(ClassificationStyleViewModel viewModel)
         {
             NamingStyleList.Add(viewModel);
         }
 
-        public void AddNamingPreference(NamingRuleDialogViewModel viewModel)
+        public void AddNamingPreference(ClassificationRuleDialogViewModel viewModel)
         {
-            var newNode = new NamingRuleTreeViewModel(
+            var newNode = new ClassificationStyleTreeViewModel(
                 viewModel.Title,
                 viewModel.SymbolSpecificationList.GetItemAt(viewModel.SelectedSymbolSpecificationIndex) as SymbolSpecificationViewModel,
-                viewModel.NamingStyleList.GetItemAt(viewModel.NamingStyleIndex) as NamingStyleViewModel,
+                viewModel.NamingStyleList.GetItemAt(viewModel.NamingStyleIndex) as ClassificationStyleViewModel,
                 this);
 
             if (viewModel.ParentRuleIndex == 0)
@@ -40,7 +40,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
             else
             {
-                var parent = viewModel.ParentRuleList.GetItemAt(viewModel.ParentRuleIndex) as NamingRuleTreeViewModel;
+                var parent = viewModel.ParentRuleList.GetItemAt(viewModel.ParentRuleIndex) as ClassificationStyleTreeViewModel;
                 parent.Children.Add(newNode);
             }
         }
@@ -48,22 +48,22 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         internal ClassificaitonDialogViewModel(SerializableNamingStylePreferencesInfo info)
         {
             this.SymbolSpecificationList = new ObservableCollection<SymbolSpecificationViewModel>(info.SymbolSpecifications.Select(s => new SymbolSpecificationViewModel(s)));
-            this.NamingStyleList = new ObservableCollection<NamingStyleViewModel>(info.NamingStyles.Select(s => new NamingStyleViewModel(s)));
+            this.NamingStyleList = new ObservableCollection<ClassificationStyleViewModel>(info.NamingStyles.Select(s => new ClassificationStyleViewModel(s)));
             this._root = CreateRoot(info);
         }
 
-        private NamingRuleTreeViewModel CreateRoot(SerializableNamingStylePreferencesInfo info)
+        private ClassificationStyleTreeViewModel CreateRoot(SerializableNamingStylePreferencesInfo info)
         {
-            var root = new NamingRuleTreeViewModel("Naming Rules:");
+            var root = new ClassificationStyleTreeViewModel("Naming Rules:");
             CreateRootHelper(root, info.NamingRules);
             return root;
         }
 
-        private void CreateRootHelper(NamingRuleTreeViewModel rule, List<SerializableNamingRule> children)
+        private void CreateRootHelper(ClassificationStyleTreeViewModel rule, List<SerializableNamingRule> children)
         {            
             foreach (var child in children)
             {
-                var newRule = new NamingRuleTreeViewModel(
+                var newRule = new ClassificationStyleTreeViewModel(
                     child.Title,
                     SymbolSpecificationList.SingleOrDefault(s => s.ID == child.SymbolSpecificationID),
                     NamingStyleList.SingleOrDefault(s => s.ID == child.NamingStyleID),
@@ -92,7 +92,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             return result;
         }
 
-        private void CreateNamingRuleTreeHelper(List<SerializableNamingRule> result, IList<NamingRuleTreeViewModel> children)
+        private void CreateNamingRuleTreeHelper(List<SerializableNamingRule> result, IList<ClassificationStyleTreeViewModel> children)
         {
             foreach (var child in children)
             {
@@ -113,9 +113,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             return true;
         }
 
-        internal List<NamingRuleTreeViewModel> CreateAllowableParentList(NamingRuleTreeViewModel excludedSubtree = null)
+        internal List<ClassificationStyleTreeViewModel> CreateAllowableParentList(ClassificationStyleTreeViewModel excludedSubtree = null)
         {
-            var ruleList = new List<NamingRuleTreeViewModel>();
+            var ruleList = new List<ClassificationStyleTreeViewModel>();
             foreach (var child in _root.Children)
             {
                 CreateAllowableParentListHelper(child, ruleList, excludedSubtree);
@@ -128,7 +128,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         {
         }
 
-        private void CreateAllowableParentListHelper(NamingRuleTreeViewModel ruleToProcess, List<NamingRuleTreeViewModel> ruleList, NamingRuleTreeViewModel excludedSubtree)
+        private void CreateAllowableParentListHelper(ClassificationStyleTreeViewModel ruleToProcess, List<ClassificationStyleTreeViewModel> ruleList, ClassificationStyleTreeViewModel excludedSubtree)
         {
             if (ruleToProcess == excludedSubtree)
             {
@@ -150,7 +150,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
         }
 
-        internal void DeleteNamingStyle(NamingStyleViewModel a)
+        internal void DeleteNamingStyle(ClassificationStyleViewModel a)
         {
             if (!NamingStyleUsedInTree(a))
             {
@@ -167,9 +167,9 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             }
         }
 
-        private NamingRuleTreeViewModel GetRuleAtPosition(int a)
+        private ClassificationStyleTreeViewModel GetRuleAtPosition(int a)
         {
-            Queue<NamingRuleTreeViewModel> q = new Queue<NamingRuleTreeViewModel>();
+            Queue<ClassificationStyleTreeViewModel> q = new Queue<ClassificationStyleTreeViewModel>();
             q.Enqueue(_root);
 
             for (int i = 0; i <= a; i++)
@@ -192,7 +192,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             return null;
         }
 
-        internal void DeleteRule(NamingRuleTreeViewModel a)
+        internal void DeleteRule(ClassificationStyleTreeViewModel a)
         {
             if (!a.HasChildren && a.Parent != null)
             {
@@ -206,17 +206,17 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
             return _root.Children.Any(c => c.symbolSpec == a || SymbolSpecUsedInTree(a, c));
         }
 
-        private bool SymbolSpecUsedInTree(SymbolSpecificationViewModel a, NamingRuleTreeViewModel c)
+        private bool SymbolSpecUsedInTree(SymbolSpecificationViewModel a, ClassificationStyleTreeViewModel c)
         {
             return c.Children.Any(child => child.symbolSpec == a || SymbolSpecUsedInTree(a, child));
         }
 
-        private bool NamingStyleUsedInTree(NamingStyleViewModel a)
+        private bool NamingStyleUsedInTree(ClassificationStyleViewModel a)
         {
             return _root.Children.Any(c => c.namingStyle == a || NamingStyleUsedInTree(a, c));
         }
 
-        private bool NamingStyleUsedInTree(NamingStyleViewModel a, NamingRuleTreeViewModel c)
+        private bool NamingStyleUsedInTree(ClassificationStyleViewModel a, ClassificationStyleTreeViewModel c)
         {
             return c.Children.Any(child => child.namingStyle == a || NamingStyleUsedInTree(a, child));
         }

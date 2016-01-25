@@ -1,0 +1,83 @@
+﻿<vs:DialogWindow x:Uid="NamingStyle"
+             x:Class="Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.Classification.ClassificationStyleDialog"
+             x:ClassModifier="internal"
+             x:Name="dialog"
+             xmlns:local="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences"
+             xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:s="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+             mc:Ignorable="d" 
+             d:DesignHeight="350" d:DesignWidth="550"
+             Height="350" Width="550"
+             MinHeight="350" MinWidth="550"
+             Title="Symbol Specification"
+             HasHelpButton="True"
+             FocusManager.FocusedElement="{Binding ElementName=interfaceNameTextBox}"
+             ResizeMode="CanResizeWithGrip"
+             ShowInTaskbar="False"
+             HasDialogFrame="True"
+             WindowStartupLocation="CenterOwner">
+    <Window.Resources>
+        <local:RadioBoolToIntConverter x:Key="radioBoolToIntConverter" />
+        <Style TargetType="ListBoxItem">
+            <Setter Property="IsTabStop" 
+                    Value="False" />
+        </Style>
+        <Thickness x:Key="labelPadding">0, 5, 0, 2</Thickness>
+        <Thickness x:Key="okCancelButtonPadding">9,2,9,2</Thickness>
+        <Thickness x:Key="selectDeselectButtonPadding">9,2,9,2</Thickness>
+        <Thickness x:Key="textboxPadding">2</Thickness>
+    </Window.Resources>
+    <StackPanel Orientation="Vertical" Margin="1,0,-1,0.5">
+        <Label HorizontalAlignment="Left">Maybe some explanatory text goes here.</Label>
+        <StackPanel Orientation="Horizontal">
+            <Label FontWeight="Bold">Style Title:</Label>
+            <TextBox Width="300" Text="{Binding NamingConventionName, Mode=TwoWay}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label FontWeight="Bold">Current Configuration:</Label>
+            <TextBlock Width="300" Text="{Binding CurrentConfiguration, Mode=TwoWay}" VerticalAlignment="Center"></TextBlock>
+        </StackPanel>
+        <Label FontWeight="Bold">Options:</Label>
+        <StackPanel Orientation="Horizontal">
+            <Label>Required Prefix:</Label>
+            <TextBox Width="100" Text="{Binding RequiredPrefix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+            <Label>Required Suffix:</Label>
+            <TextBox Width="100" Text="{Binding RequiredSuffix, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label>Word Separator:</Label>
+            <TextBox Width="100" Text="{Binding WordSeparator, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"></TextBox>
+        </StackPanel>
+        <Label>Capitalization:</Label>
+        <RadioButton GroupName="Group" IsChecked="{Binding Path=FirstWordGroupCapitalization, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=0, Mode=TwoWay}">Pascal Case Name</RadioButton>
+        <RadioButton GroupName="Group" IsChecked="{Binding Path=FirstWordGroupCapitalization, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=1, Mode=TwoWay}">camel Case Name</RadioButton>
+        <RadioButton GroupName="Group" IsChecked="{Binding Path=FirstWordGroupCapitalization, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=2, Mode=TwoWay}">First upper name</RadioButton>
+        <RadioButton GroupName="Group" IsChecked="{Binding Path=FirstWordGroupCapitalization, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=3, Mode=TwoWay}">ALL WORDS UPPER</RadioButton>
+        <RadioButton GroupName="Group" IsChecked="{Binding Path=FirstWordGroupCapitalization, Converter={StaticResource radioBoolToIntConverter}, ConverterParameter=4, Mode=TwoWay}">all words lower</RadioButton>
+        <StackPanel Grid.Row="2" 
+                    HorizontalAlignment="Right" 
+                    Margin="0, 11, 0, 0"
+                    Orientation="Horizontal">
+            <Button x:Uid="OkButton" 
+                    Click="OK_Click"
+                    Content="OK" 
+                    Margin="0, 0, 0, 0" 
+                    Padding="{StaticResource ResourceKey=okCancelButtonPadding}"
+                    IsDefault="True"
+                    MinWidth="73"
+                    MinHeight="21"/>
+            <Button x:Uid="CancelButton" 
+                    Click="Cancel_Click"
+                    Content="Cancel"
+                    Margin="7, 0, 0, 0" 
+                    Padding="{StaticResource ResourceKey=okCancelButtonPadding}"
+                    IsCancel="True"
+                    MinWidth="73"
+                    MinHeight="21"/>
+        </StackPanel>
+    </StackPanel>
+</vs:DialogWindow>
