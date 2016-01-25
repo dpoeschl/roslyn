@@ -15,6 +15,12 @@ using Microsoft.CodeAnalysis;
 using System.IO;
 using System.Xml;
 using System.Runtime.Serialization;
+using Microsoft.VisualStudio.Text.Classification;
+using Roslyn.Utilities;
+using Microsoft.VisualStudio.Text.Formatting;
+using System.Windows.Media;
+using System.Globalization;
+using Microsoft.VisualStudio.ComponentModelHost;
 
 namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.Classification
 {
@@ -28,6 +34,25 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.C
         internal ClassificaitonDialog(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
+            var componentModel = (IComponentModel)serviceProvider.GetService(typeof(SComponentModel));
+            var classificationTypeRegistryService = componentModel.GetService<IClassificationTypeRegistryService>();
+            var classificationFormatMapService = componentModel.GetService<IClassificationFormatMapService>();
+
+            var wat = classificationTypeRegistryService.CreateClassificationType("wat", SpecializedCollections.EmptyEnumerable<IClassificationType>());
+            var textMap = classificationFormatMapService.GetClassificationFormatMap("text");
+
+            var runProperties = TextFormattingRunProperties.CreateTextFormattingRunProperties(
+                new SolidColorBrush(Colors.Brown),
+                new SolidColorBrush(Colors.Yellow),
+                new Typeface("Foo"),
+                12,
+                12,
+                new TextDecorationCollection(),
+                new TextEffectCollection(),
+                CultureInfo.CurrentCulture);
+
+            textMap.AddExplicitTextProperties(wat, runProperties);
+
             DataContractSerializer ser = new DataContractSerializer(typeof(SerializableNamingStylePreferencesInfo));
             var currentValue = this.OptionService.GetOption(SimplificationOptions.NamingPreferences, LanguageNames.CSharp);
             SerializableNamingStylePreferencesInfo info;

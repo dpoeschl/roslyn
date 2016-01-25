@@ -10,6 +10,7 @@ using Microsoft.CodeAnalysis.Simplification;
 using Microsoft.CodeAnalysis;
 using System.Xml;
 using System.IO;
+using Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.Classification;
 
 namespace Microsoft.VisualStudio.LanguageServices.CSharp.Options
 {
@@ -39,7 +40,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.Options
     {
         protected override AbstractOptionPageControl CreateOptionPage(IServiceProvider serviceProvider)
         {
-            return new NamingPreferencesDialog(serviceProvider);
+            return new ClassificaitonDialog(serviceProvider);
 
             //var result = dialog.ShowModal();
             //if (result == true)

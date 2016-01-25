@@ -155,7 +155,8 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
                         // We bound to a symbol.  If we bound to a symbol called "var" then we want to
                         // classify this appropriately as a type.  Otherwise, we want to classify this as
                         // a keyword.
-                        classifiedSpan = new ClassifiedSpan(name.Span, ClassificationTypeNames.Keyword);
+                        // classificationTypeRegistryService.GetClassificationType("wat");
+                        classifiedSpan = new ClassifiedSpan(name.Span, "wat"); //  ClassificationTypeNames.Keyword);
                         return true;
                     }
                 }
