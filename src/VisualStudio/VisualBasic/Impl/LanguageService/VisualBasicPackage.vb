@@ -35,6 +35,7 @@ Namespace Microsoft.VisualStudio.LanguageServices.VisualBasic
     <ProvideLanguageExtension(GetType(VisualBasicLanguageService), ".pag")>
     <ProvideLanguageExtension(GetType(VisualBasicLanguageService), ".vb")>
     <ProvideLanguageEditorOptionPage(GetType(AdvancedOptionPage), "Basic", Nothing, "Advanced", "#102", 10160)>
+    <ProvideLanguageEditorOptionPage(GetType(NamingStylesOptionPage), "Basic", Nothing, "Naming", "#110", 10160)>
     <ProvideLanguageEditorOptionPage(GetType(StyleOptionPage), "Basic", Nothing, "Code Style", "#109", 10161)>
     <ProvideAutomationProperties("TextEditor", "Basic", Guids.TextManagerPackageString, 103, 105, Guids.VisualBasicPackageIdString)>
     <ProvideAutomationProperties("TextEditor", "Basic-Specific", Guids.VisualBasicPackageIdString, 104, 106)>

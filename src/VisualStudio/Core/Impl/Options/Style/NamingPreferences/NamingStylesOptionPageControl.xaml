@@ -1,0 +1,154 @@
+﻿<options:AbstractOptionPageControl
+    x:Class="Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences.NamingStylesOptionPageControl"
+    x:ClassModifier="internal"
+    xmlns:options="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options"
+    xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+    xmlns:imagecatalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+    xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+    xmlns:vsi="clr-namespace:Microsoft.Internal.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:s="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+    xmlns:naming="clr-namespace:Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.NamingPreferences"
+    mc:Ignorable="d" 
+    d:DesignHeight="500" d:DesignWidth="800">
+    <Control.Resources>
+        <Style TargetType="ListBoxItem">
+            <Setter Property="IsTabStop" 
+                    Value="False" />
+        </Style>
+        <Thickness x:Key="labelPadding">0, 5, 0, 2</Thickness>
+        <Thickness x:Key="okCancelButtonPadding">9,2,9,2</Thickness>
+        <Thickness x:Key="selectDeselectButtonPadding">9,2,9,2</Thickness>
+        <Thickness x:Key="textboxPadding">2</Thickness>
+    </Control.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <!--<ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="1*"/>-->
+        </Grid.ColumnDefinitions>
+        <TextBlock TextWrapping="WrapWithOverflow" Grid.Row="0" Grid.ColumnSpan="5" HorizontalAlignment="Left">
+            Naming Rules -- combinations of Symbol Specifications and Naming Styles. More explanation here!
+        </TextBlock>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Margin="0 8 0 0">
+            <Label HorizontalAlignment="Center">Naming Rules</Label>
+            <Button Click="Button_Click_2" Height="24" Width="24">
+                <imaging:CrispImage Name="UpArrowImage445" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
+            </Button>
+            <Button Click="Delete_3" Margin="6 0 0 0" Height="24" Width="24">
+                <imaging:CrispImage Name="UpArrowImage2555" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
+            </Button>
+        </StackPanel>
+        <Border Margin="9"
+                Grid.Row="2" Grid.Column="0"                                    
+                BorderThickness="1" BorderBrush="Gray">
+            <vsi:PivotTreeView x:Name="RootTreeView" >
+                <vsi:PivotTreeView.Resources>
+                    <Style TargetType="vsi:HighlightTextBlock">
+                        <Setter Property="Margin" Value="0, 2"/>
+                    </Style>
+                    <Style TargetType="vsi:EditableItemTextBox">
+                        <Setter Property="Margin" Value="0, 2"/>
+                    </Style>
+                </vsi:PivotTreeView.Resources>
+            </vsi:PivotTreeView>
+            <!--                        SelectionMode="{Binding ElementName=SelectionMode, Path=SelectedItem}" 
+                                       ShowRootExpander="{Binding ElementName=ShowRootExpander, Path=IsChecked}"
+ -->
+        </Border>
+        <!--<Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Click="Button_Click_2">
+            <imaging:CrispImage Name="UpArrowImage3" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.LeftArrowAsterisk}"></imaging:CrispImage>
+        </Button>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="2">
+            <Label>Symbol Specification</Label>
+            <Button Click="Button_Click">
+                <imaging:CrispImage Name="UpArrowImage" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
+            </Button>
+            <Button Click="Delete_1">
+                <imaging:CrispImage Name="UpArrowImage2" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
+            </Button>
+        </StackPanel>
+        <ListView x:Uid="SymbolSpecificationList"
+                          x:Name="SymbolSpecificationList"
+                          Margin="9"
+                          Grid.Row="2" Grid.Column="2" 
+                          SelectionMode="Single"
+                          MouseDoubleClick="SymbolSpecificationList_MouseDoubleClick"
+                          ItemsSource="{Binding SymbolSpecificationList, Mode=TwoWay}">
+            <ListView.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding KeyCommand}" CommandParameter="{Binding SelectedItem}"></KeyBinding>
+                </ListView.InputBindings>
+                <ListView.ItemTemplate x:Uid="SelectableMemberListItem">
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock x:Uid="SelectableMemberName" 
+                                                   Text="{Binding SymbolSpecName}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        <imaging:CrispImage Grid.Row="1" Grid.Column="3" Name="UpArrowImage34" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.Add}" Grayscale="True"></imaging:CrispImage>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1" Grid.Column="4">
+            <Label>Naming Convention</Label>
+            <Button Click="Button_Click_1">
+                <imaging:CrispImage Name="UpArrowImage5" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.Add}"></imaging:CrispImage>
+            </Button>
+            <Button Click="Delete_2">
+                <imaging:CrispImage Name="UpArrowImage255" 
+                                        Height="16" 
+                                        Width="16" 
+                                        Moniker="{x:Static imagecatalog:KnownMonikers.DeleteListItem}"></imaging:CrispImage>
+            </Button>
+        </StackPanel>
+        <ListView x:Uid="NamingConventionList"
+                  Grid.Row="2"
+                  Grid.Column="4"
+                  Height="Auto"
+                          x:Name="NamingConventionList"
+                          Margin="9"
+                          SelectionMode="Single"
+                          ItemsSource="{Binding NamingStyleList, Mode=TwoWay}"
+                          MouseDoubleClick="NamingConventionList_MouseDoubleClick">
+            <ListView.ItemTemplate x:Uid="SelectableMemberListItem">
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Uid="SelectableMemberName" 
+                                                   Text="{Binding NamingConventionName}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>-->
+        <!--Grayscale="{Binding IsEnabled, ElementName=UpButton, Converter={StaticResource NegateBooleanConverter}}"/>-->
+    </Grid>
+</options:AbstractOptionPageControl>

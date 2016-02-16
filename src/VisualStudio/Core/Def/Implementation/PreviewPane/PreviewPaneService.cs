@@ -22,6 +22,14 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
     [ExportWorkspaceServiceFactory(typeof(IPreviewPaneService), ServiceLayer.Host), Shared]
     internal class PreviewPaneService : ForegroundThreadAffinitizedObject, IPreviewPaneService, IWorkspaceServiceFactory
     {
+        private readonly EnvDTE.DTE _dte;
+
+        [ImportingConstructor]
+        public PreviewPaneService(SVsServiceProvider serviceProvider)
+        {
+            _dte = serviceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE.DTE;
+        }
+
         IWorkspaceService IWorkspaceServiceFactory.CreateService(HostWorkspaceServices workspaceServices)
         {
             return this;
@@ -96,11 +104,21 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
 
                 return new PreviewPane(
                     severityIcon: null, id: null, title: null, description: null, helpLink: null, helpLinkToolTipText: null,
-                    previewContent: previewContent, logIdVerbatimInTelemetry: false);
+                    previewContent: previewContent, logIdVerbatimInTelemetry: false, dte: _dte);
             }
 
             var helpLinkToolTipText = string.Empty;
             Uri helpLink = GetHelpLink(diagnostic, language, projectType, out helpLinkToolTipText);
+
+            Guid guid = default(Guid);
+            string guidString;
+            if (diagnostic.Properties.TryGetValue("OptionsPageGuid", out guidString))
+            {
+                guid = Guid.Parse(guidString);
+            }
+
+            string parameter;
+            diagnostic.Properties.TryGetValue("OptionsPageParameter", out parameter);
 
             return new PreviewPane(
                 severityIcon: GetSeverityIconForDiagnostic(diagnostic),
@@ -109,7 +127,10 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.PreviewPane
                 helpLink: helpLink,
                 helpLinkToolTipText: helpLinkToolTipText,
                 previewContent: previewContent,
-                logIdVerbatimInTelemetry: diagnostic.CustomTags.Contains(WellKnownDiagnosticTags.Telemetry));
+                logIdVerbatimInTelemetry: diagnostic.CustomTags.Contains(WellKnownDiagnosticTags.Telemetry),
+                dte: _dte,
+                targetGuid: guid,
+                parameter: parameter);
         }
     }
 }

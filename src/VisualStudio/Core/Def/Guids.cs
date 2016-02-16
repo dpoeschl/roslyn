@@ -6,6 +6,7 @@ namespace Microsoft.VisualStudio.LanguageServices
 {
     internal static class Guids
     {
+        public const string Yep = "13c3bbb4-f18f-4111-9f54-a0fb010d8888";
         public const string CSharpPackageIdString = "13c3bbb4-f18f-4111-9f54-a0fb010d9194";
         public const string CSharpProjectIdString = "fae04ec0-301f-11d3-bf4b-00c04f79efbc";
         public const string CSharpLanguageServiceIdString = "694dd9b6-b865-4c5b-ad85-86356e9c88dc";
@@ -39,6 +40,7 @@ namespace Microsoft.VisualStudio.LanguageServices
 
         // option page guids from csharp\rad\pkg\guids.h
         public const string CSharpOptionPageAdvancedIdString = "8FD0B177-B244-4A97-8E37-6FB7B27DE3AF";
+        public const string CSharpOptionPageNamingStyleIdString = "8FD0B177-B244-AAAA-8E37-6FB7FFFFFFFF";
         public const string CSharpOptionPageIntelliSenseIdString = "EDE66829-7A36-4c5d-8E20-9290195DCF80";
         public const string CSharpOptionPageFormattingIdString = "3EB2CC0B-033E-4D75-B26A-B2362C25227E";
         public const string CSharpOptionPageFormattingIndentationIdString = "5E21D017-6D2A-4114-A1F1-C923F001CBBB";
@@ -75,6 +77,7 @@ namespace Microsoft.VisualStudio.LanguageServices
 
         // option page guid from setupauthoring\vb\components\vblanguageservice.pkgdef
         public const string VisualBasicOptionPageVBSpecificIdString = "F1E1021E-A781-4862-9F4B-88746A288A67";
+        public const string VisualBasicOptionPageNamingStyleIdString = "8FD0B177-B244-AAAA-8E37-6FB7FFFEEEEE";
 
         // from vscommon\inc\textmgruuids.h
         public const string TextManagerPackageString = "F5E7E720-1401-11D1-883B-0000F87579D2";

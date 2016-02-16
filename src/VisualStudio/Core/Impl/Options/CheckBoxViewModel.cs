@@ -9,6 +9,19 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
     {
         private readonly AbstractOptionPreviewViewModel _info;
 
+        private bool _isHighlighted;
+        public bool IsHighlighted
+        {
+            get
+            {
+                return _isHighlighted;
+            }
+            set
+            {
+                SetProperty(ref _isHighlighted, value);
+            }
+        }
+
         internal string GetPreview()
         {
             return _isChecked ? _truePreview : _falsePreview;

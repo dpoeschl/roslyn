@@ -167,4 +167,7 @@
     <value>Qualify with Me;Prefer intrinsic types;Style;Code Style</value>
     <comment>Code Style options page keywords</comment>
   </data>
+  <data name="110" xml:space="preserve">
+    <value>Naming</value>
+  </data>
 </root>
