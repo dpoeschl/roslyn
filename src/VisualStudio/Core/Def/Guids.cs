@@ -39,8 +39,9 @@ namespace Microsoft.VisualStudio.LanguageServices
 
         // option page guids from csharp\rad\pkg\guids.h
         public const string CSharpOptionPageAdvancedIdString = "8FD0B177-B244-4A97-8E37-6FB7B27DE3AF";
+        public const string CSharpOptionPageNamingStyleIdString = "8FD0B177-B244-AAAA-8E37-6FB7FFFFFFFF";
         public const string CSharpOptionPageIntelliSenseIdString = "EDE66829-7A36-4c5d-8E20-9290195DCF80";
-        public const string CSharpOptionPageFormattingIdString = "3EB2CC0B-033E-4D75-B26A-B2362C25227E";
+        public const string CSharpOptionPageCodeStyleIdString = "3EB2CC0B-033E-4D75-B26A-B2362C25227E";
         public const string CSharpOptionPageFormattingIndentationIdString = "5E21D017-6D2A-4114-A1F1-C923F001CBBB";
         public const string CSharpOptionPageFormattingNewLinesIdString = "607D8062-68D1-41E4-9A35-B5E7F14D0481";
         public const string CSharpOptionPageFormattingSpacingIdString = "234FB566-73DD-4612-8DE4-29031FF27052";
@@ -60,6 +61,7 @@ namespace Microsoft.VisualStudio.LanguageServices
         public const string VisualBasicCodePageEditorFactoryIdString = "6c33e1aa-1401-4536-ab67-0e21e6e569da";
         public const string VisualBasicDebuggerLanguageIdString = "3a12d0b8-c26c-11d0-b442-00a0244a1dd2";
         public const string VisualBasicLibraryIdString = "414AC972-9829-4b6a-A8D7-A08152FEB8AA";
+        public const string VisualBasicOptionPageCodeStyleIdString = "414AC972-9829-4b6a-A8D7-A081CCCCCCCC";
 
         public static readonly Guid VisualBasicPackageId = new Guid(VisualBasicPackageIdString);
         public static readonly Guid VisualBasicCompilerServiceId = new Guid(VisualBasicCompilerServiceIdString);
@@ -75,6 +77,7 @@ namespace Microsoft.VisualStudio.LanguageServices
 
         // option page guid from setupauthoring\vb\components\vblanguageservice.pkgdef
         public const string VisualBasicOptionPageVBSpecificIdString = "F1E1021E-A781-4862-9F4B-88746A288A67";
+        public const string VisualBasicOptionPageNamingStyleIdString = "8FD0B177-B244-AAAA-8E37-6FB7FFFEEEEE";
 
         // from vscommon\inc\textmgruuids.h
         public const string TextManagerPackageString = "F5E7E720-1401-11D1-883B-0000F87579D2";
