@@ -51,7 +51,8 @@
             SelectionMode="Single"
             HorizontalAlignment="Stretch"
             Style="{StaticResource ResourceKey=DataGridStyle}"
-            SelectionChanged="Options_SelectionChanged">
+            SelectionChanged="Options_SelectionChanged"
+            PreviewKeyDown="Options_PreviewKeyDown">
             <DataGrid.Columns>
                 <DataGridTextColumn x:Name="description" Header="Description" Binding="{Binding Description, Mode=OneWay}" IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
@@ -66,7 +67,7 @@
                             <ComboBox
                                     ItemsSource="{Binding Preferences}"
                                     DisplayMemberPath="Name"
-                                    SelectedItem="{Binding SelectedPreference,Mode=TwoWay}" />
+                                    SelectedItem="{Binding SelectedPreference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -75,8 +76,27 @@
                         <DataTemplate>
                             <ComboBox
                                     ItemsSource="{Binding NotificationPreferences}"
-                                    DisplayMemberPath="Name"
-                                    SelectedItem="{Binding SelectedNotificationPreference,Mode=TwoWay}" />
+                                    SelectedItem="{Binding SelectedNotificationPreference,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <imaging:CrispImage
+                                            Height="16" 
+                                            Width="16" 
+                                            Moniker="{Binding Moniker}"
+                                            Grid.Column="0"/>
+                                            <TextBlock 
+                                            Margin="5, 0, 0, 0" 
+                                            Text="{Binding Notification}"
+                                            Grid.Column="1"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

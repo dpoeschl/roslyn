@@ -28,38 +28,41 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         private void Options_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var dataGrid = (DataGrid)sender;
-            //var codeStyleItem = (StyleOptionViewModel)dataGrid.SelectedItem; // TODO
-            //if (codeStyleItem != null)
-            //{
-            //    ViewModel.UpdatePreview(codeStyleItem.GetPreview());
-            //}
+            var codeStyleItem = (SimpleCodeStyleOptionViewModel)dataGrid.SelectedItem;
+
+            if (codeStyleItem != null)
+            {
+                ViewModel.UpdatePreview(codeStyleItem.GetPreview());
+            }
         }
 
         private void Options_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space && e.KeyboardDevice.Modifiers == ModifierKeys.None)
             {
-                var listView = (ListView)sender;
-                var checkBox = listView.SelectedItem as CheckBoxOptionViewModel;
-                if (checkBox != null)
-                {
-                    checkBox.IsChecked = !checkBox.IsChecked;
-                    e.Handled = true;
-                }
+                // TODO: make combo drop down on space or some key.
 
-                var radioButton = listView.SelectedItem as AbstractRadioButtonViewModel;
-                if (radioButton != null)
-                {
-                    radioButton.IsChecked = true;
-                    e.Handled = true;
-                }
+                //var listView = (ListView)sender;
+                //var checkBox = listView.SelectedItem as CheckBoxOptionViewModel;
+                //if (checkBox != null)
+                //{
+                //    checkBox.IsChecked = !checkBox.IsChecked;
+                //    e.Handled = true;
+                //}
 
-                var checkBoxWithCombo = listView.SelectedItem as CheckBoxWithComboOptionViewModel;
-                if (checkBoxWithCombo != null)
-                {
-                    checkBoxWithCombo.IsChecked = !checkBoxWithCombo.IsChecked;
-                    e.Handled = true;
-                }
+                //var radioButton = listView.SelectedItem as AbstractRadioButtonViewModel;
+                //if (radioButton != null)
+                //{
+                //    radioButton.IsChecked = true;
+                //    e.Handled = true;
+                //}
+
+                //var checkBoxWithCombo = listView.SelectedItem as CheckBoxWithComboOptionViewModel;
+                //if (checkBoxWithCombo != null)
+                //{
+                //    checkBoxWithCombo.IsChecked = !checkBoxWithCombo.IsChecked;
+                //    e.Handled = true;
+                //}
             }
         }
 
