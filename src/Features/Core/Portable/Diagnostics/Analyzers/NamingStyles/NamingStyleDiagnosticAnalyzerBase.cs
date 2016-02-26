@@ -72,7 +72,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                 {
                     var descriptor = new DiagnosticDescriptor(IDEDiagnosticIds.NamingRuleId,
                          "Title", // Todo: strings
-                         string.Format("'{0}' naming violation - ", applicableRule.Title) + failureReason,
+                         string.Format(FeaturesResources.NamingViolationDescription, applicableRule.Title, failureReason),
                          DiagnosticCategory.Style,
                          applicableRule.EnforcementLevel,
                          isEnabledByDefault: true);

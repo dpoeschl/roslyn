@@ -133,6 +133,15 @@ namespace Microsoft.VisualStudio.LanguageServices {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose a Symbol Specification and a Naming Style..
+        /// </summary>
+        internal static string ChooseASymbolSpecificationAndNamingStyle {
+            get {
+                return ResourceManager.GetString("ChooseASymbolSpecificationAndNamingStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; encountered an error and has been disabled..
         /// </summary>
         internal static string CodefixOrRefactoringEncounteredError {
@@ -327,6 +336,33 @@ namespace Microsoft.VisualStudio.LanguageServices {
         internal static string EndPositionMustBeGreaterThanStart {
             get {
                 return ResourceManager.GetString("EndPositionMustBeGreaterThanStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a title for this Naming Rule..
+        /// </summary>
+        internal static string EnterATitleForThisNamingRule {
+            get {
+                return ResourceManager.GetString("EnterATitleForThisNamingRule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a title for this Naming Style..
+        /// </summary>
+        internal static string EnterATitleForThisNamingStyle {
+            get {
+                return ResourceManager.GetString("EnterATitleForThisNamingStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a title for this Symbol Specification..
+        /// </summary>
+        internal static string EnterATitleForThisSymbolSpecification {
+            get {
+                return ResourceManager.GetString("EnterATitleForThisSymbolSpecification", resourceCulture);
             }
         }
         

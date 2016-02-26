@@ -179,7 +179,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         {
             if (string.IsNullOrWhiteSpace(SymbolSpecName))
             {
-                _notificationService.SendNotification("Enter a name for this Symbol Specification.");
+                _notificationService.SendNotification(ServicesVSResources.EnterATitleForThisSymbolSpecification);
                 return false;
             }
 

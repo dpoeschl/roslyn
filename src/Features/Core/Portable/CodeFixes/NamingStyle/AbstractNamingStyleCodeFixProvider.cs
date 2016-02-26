@@ -50,7 +50,7 @@ namespace Microsoft.CodeAnalysis.CodeFixes.NamingStyles
                 var solution = context.Document.Project.Solution;
                 context.RegisterCodeFix(
                     new FixNameCodeAction(
-                        string.Format("Fix Name Violation: {0}", fixedName),
+                        string.Format(FeaturesResources.FixNamingViolation, fixedName),
                         async c => await Renamer.RenameSymbolAsync(
                             solution,
                             symbol,

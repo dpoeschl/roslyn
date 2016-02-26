@@ -76,13 +76,13 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
 
             if (!name.StartsWith(Prefix))
             {
-                failureReason = string.Format("Missing prefix: '{0}'", Prefix);
+                failureReason = string.Format(FeaturesResources.NamingViolation_MissingPrefix, Prefix);
                 return false;
             }
 
             if (!name.EndsWith(Suffix))
             {
-                failureReason = string.Format("Missing suffix: '{0}'", Suffix);
+                failureReason = string.Format(FeaturesResources.NamingViolation_MissingSuffix, Suffix);
                 return false;
             }
 
@@ -112,7 +112,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                     else
                     {
                         var violations = words.All(w => !char.IsUpper(w[0]));
-                        failureReason = "These words must begin with upper case characters: " + string.Join(", ", violations);
+                        failureReason = string.Format(FeaturesResources.NamingViolation_WordsMustBeginWithUppercase, string.Join(", ", violations));
                         return false;
                     }
                 case Capitalization.CamelCase:
@@ -124,7 +124,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                     {
                         if (!char.IsLower(words.First()[0]))
                         {
-                            failureReason = "The first word, '{0}', must begin with a lower case character";
+                            failureReason = FeaturesResources.NamingViolation_FirstWordMustBeginWithLowercase;
                         }
 
                         var violations = words.Skip(1).Where(w => !char.IsUpper(w[0]));
@@ -132,10 +132,10 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                         {
                             if (failureReason != string.Empty)
                             {
-                                failureReason += "; ";
+                                failureReason += Environment.NewLine;
                             }
 
-                            failureReason += "These non-leading words must begin with an upper case letter: " + string.Join(", ", violations);
+                            failureReason += string.Format(FeaturesResources.NamingViolation_NonLeadingWordsMustBeginWithUppercase, string.Join(", ", violations));
                         }
 
                         return false;
@@ -149,7 +149,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                     {
                         if (!char.IsUpper(words.First()[0]))
                         {
-                            failureReason = "The first word, '{0}', must begin with an upper case character";
+                            failureReason = string.Format(FeaturesResources.NamingViolation_FirstWordMustBeginWithUppercase, words.First());
                         }
 
                         var violations = words.Skip(1).Where(w => !char.IsLower(w[0]));
@@ -160,7 +160,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                                 failureReason += Environment.NewLine;
                             }
 
-                            failureReason += "These non-leading words must begin with a lowercase letter: " + string.Join(", ", violations);
+                            failureReason += string.Format(FeaturesResources.NamingViolation_NonLeadingWordsMustBeginWithLowercase, string.Join(", ", violations));
                         }
 
                         return false;
@@ -173,7 +173,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                     else
                     {
                         var violations = words.Where(w => !w.ToCharArray().All(c => char.IsUpper(c)));
-                        failureReason = "These words cannot contain lower case characters: " + string.Join(", ", violations);
+                        failureReason = string.Format(FeaturesResources.NamingViolation_WordsCannotContainLowercaseLetters, string.Join(", ", violations));
                         return false;
                     }
                 case Capitalization.AllLower:
@@ -184,7 +184,7 @@ namespace Microsoft.CodeAnalysis.Diagnostics.Analyzers.NamingStyles
                     else
                     {
                         var violations = words.Where(w => !w.ToCharArray().All(c => char.IsLower(c)));
-                        failureReason = "These words cannot contain upper case characters: " + string.Join(", ", violations);
+                        failureReason = string.Format(FeaturesResources.NamingViolation_WordsCannotContainUppercaseLetters, string.Join(", ", violations));
                         return false;
                     }
                 default:

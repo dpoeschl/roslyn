@@ -206,13 +206,13 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         {
             if (_selectedSymbolSpecificationIndex < 0 || _namingStyleIndex < 0)
             {
-                _notificationService.SendNotification("Choose a Symbol Specification and a Naming Style.");
+                _notificationService.SendNotification(ServicesVSResources.ChooseASymbolSpecificationAndNamingStyle);
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(Title))
             {
-                _notificationService.SendNotification("Enter a title for this Naming Rule.");
+                _notificationService.SendNotification(ServicesVSResources.EnterATitleForThisNamingRule);
                 return false;
             }
             

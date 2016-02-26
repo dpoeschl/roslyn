@@ -513,4 +513,16 @@ Use the dropdown to view and switch to other projects this file may belong to.</
   <data name="Unknown" xml:space="preserve">
     <value>&lt;Unknown&gt;</value>
   </data>
+  <data name="ChooseASymbolSpecificationAndNamingStyle" xml:space="preserve">
+    <value>Choose a Symbol Specification and a Naming Style.</value>
+  </data>
+  <data name="EnterATitleForThisNamingRule" xml:space="preserve">
+    <value>Enter a title for this Naming Rule.</value>
+  </data>
+  <data name="EnterATitleForThisNamingStyle" xml:space="preserve">
+    <value>Enter a title for this Naming Style.</value>
+  </data>
+  <data name="EnterATitleForThisSymbolSpecification" xml:space="preserve">
+    <value>Enter a title for this Symbol Specification.</value>
+  </data>
 </root>

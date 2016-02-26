@@ -151,7 +151,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options.Style.N
         {
             if (string.IsNullOrWhiteSpace(NamingConventionName))
             {
-                _notificationService.SendNotification("Enter a title for this Naming Style.");
+                _notificationService.SendNotification(ServicesVSResources.EnterATitleForThisNamingStyle);
                 return false;
             }
 
