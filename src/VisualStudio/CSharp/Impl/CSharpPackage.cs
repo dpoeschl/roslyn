@@ -34,7 +34,7 @@ namespace Microsoft.VisualStudio.LanguageServices.CSharp.LanguageService
     [ProvideLanguageEditorToolsOptionCategory("CSharp", "Code Style", "#114")]
     [ProvideLanguageEditorOptionPage(typeof(Options.AdvancedOptionPage), "CSharp", null, "Advanced", pageNameResourceId: "#102", keywordListResourceId: 306)]
     [ProvideLanguageEditorOptionPage(typeof(Options.NamingStylesOptionPage), "CSharp", @"Code Style", "Naming", pageNameResourceId: "#115", keywordListResourceId: 314)]
-    [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingStylePage), "CSharp", @"Code Style", "General", pageNameResourceId: "#108", keywordListResourceId: 313)]
+    [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.CodeStylePage), "CSharp", @"Code Style", "General", pageNameResourceId: "#108", keywordListResourceId: 313)]
     [ProvideLanguageEditorOptionPage(typeof(Options.IntelliSenseOptionPage), "CSharp", null, "IntelliSense", pageNameResourceId: "#103", keywordListResourceId: 312)]
     [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingOptionPage), "CSharp", "Code Style\\Formatting", "General", pageNameResourceId: "#108", keywordListResourceId: 307)]
     [ProvideLanguageEditorOptionPage(typeof(Options.Formatting.FormattingIndentationOptionPage), "CSharp", "Code Style\\Formatting", "Indentation", pageNameResourceId: "#109", keywordListResourceId: 308)]

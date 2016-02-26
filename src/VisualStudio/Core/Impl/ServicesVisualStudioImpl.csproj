@@ -316,6 +316,9 @@
     <Compile Include="Options\NotificationOptionViewModel.cs" />
     <Compile Include="Options\FullSolutionAnalysisOptionBinding.cs" />
     <Compile Include="Options\OptionLogger.cs" />
+    <Compile Include="Options\GridOptionPreviewControl.xaml.cs">
+      <DependentUpon>GridOptionPreviewControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options\OptionPreviewControl.xaml.cs">
       <DependentUpon>OptionPreviewControl.xaml</DependentUpon>
     </Compile>
@@ -358,6 +361,10 @@
     <Compile Include="RoslynVisualStudioWorkspace.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Options\GridOptionPreviewControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Options\OptionPreviewControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
