@@ -188,7 +188,7 @@ class C{
             // CodeStyleItems.Add(new SimpleCodeStyleOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInDeclaration, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInDeclaration, s_intrinsicPreviewDeclarationTrue, s_intrinsicPreviewDeclarationFalse, this, optionSet));
             // CodeStyleItems.Add(new SimpleCodeStyleOptionViewModel(SimplificationOptions.PreferIntrinsicPredefinedTypeKeywordInMemberAccess, CSharpVSResources.PreferIntrinsicPredefinedTypeKeywordInMemberAccess, s_intrinsicPreviewMemberAccessTrue, s_intrinsicPreviewMemberAccessFalse, this, optionSet));
 
-            CodeStyleItems.Add(SimpleCodeStyleOptionViewModel.Header("'var' preferences:"));
+            CodeStyleItems.Add(SimpleCodeStyleOptionViewModel.Header("'var' preferences"));
 
             var useVarPreferences = new List<CodeStylePreference>
             {

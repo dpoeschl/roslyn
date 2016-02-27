@@ -18,6 +18,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
 
         // data binding
         public string Description { get; set; }
+        public double DescriptionMargin { get; set; }
         public bool IsVisible { get; set; }
 
         public List<CodeStylePreference> Preferences { get; set; }
@@ -81,6 +82,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             _selectedPreference = null;
             _selectedNotificationPreference = null;
             IsVisible = false;
+            DescriptionMargin = default(double);
         }
 
         public SimpleCodeStyleOptionViewModel(
@@ -102,6 +104,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             Preferences = preferences ?? GetDefaultPreferences();
             NotificationPreferences = notificationPreferences ?? GetDefaultNotifications();
             IsVisible = true;
+            DescriptionMargin = 24d;
 
             var codeStyleOption = ((SimpleCodeStyleOption)options.GetOption(new OptionKey(option, option.IsPerLanguage ? info.Language : null)));
             _selectedPreference = Preferences.Single(c => c.IsChecked == codeStyleOption.IsChecked);
