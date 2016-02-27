@@ -24,6 +24,7 @@
                 </Setter>
             </Style>
             <Thickness x:Key="cellPadding">4 0 8 0</Thickness>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -52,31 +53,54 @@
             HorizontalAlignment="Stretch"
             Style="{StaticResource ResourceKey=DataGridStyle}"
             SelectionChanged="Options_SelectionChanged"
-            PreviewKeyDown="Options_PreviewKeyDown">
+            PreviewKeyDown="Options_PreviewKeyDown"
+            LoadingRow="Options_LoadingRow">
+            <!--<DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Setter Property="Height" Value="Auto"/>
+                </Style>
+            </DataGrid.RowStyle>-->
             <DataGrid.Columns>
-                <DataGridTextColumn x:Name="description" Header="Description" Binding="{Binding Description, Mode=OneWay}" IsReadOnly="True">
+                <!--TODO: Set width and wrapping? -->
+                <!--TODO: text alignment and font?-->
+                <DataGridTextColumn
+                    x:Name="description" 
+                    Header="Description"
+                    Binding="{Binding Description, Mode=OneWay}" 
+                    Width="*"
+                    IsReadOnly="True">
                     <DataGridTextColumn.ElementStyle>
                         <Style TargetType="TextBlock">
                             <Setter Property="Padding" Value="{StaticResource ResourceKey=cellPadding}" />
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="HorizontalAlignment" Value="Left" />
                         </Style>
                     </DataGridTextColumn.ElementStyle>
                 </DataGridTextColumn>
-                <DataGridTemplateColumn x:Name="preference" Header="Preference">
+                <DataGridTemplateColumn 
+                    x:Name="preference" 
+                    Header="Preference"
+                    Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox
                                     ItemsSource="{Binding Preferences}"
                                     DisplayMemberPath="Name"
-                                    SelectedItem="{Binding SelectedPreference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                    SelectedItem="{Binding SelectedPreference, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn x:Name="notification" Header="Notification level">
+                <DataGridTemplateColumn 
+                    x:Name="notification" 
+                    Header="Notification"
+                    Width="Auto">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <ComboBox
                                     ItemsSource="{Binding NotificationPreferences}"
-                                    SelectedItem="{Binding SelectedNotificationPreference,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    SelectedItem="{Binding SelectedNotificationPreference,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>

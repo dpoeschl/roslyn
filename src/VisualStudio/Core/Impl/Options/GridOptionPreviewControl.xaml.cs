@@ -30,9 +30,22 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             var dataGrid = (DataGrid)sender;
             var codeStyleItem = (SimpleCodeStyleOptionViewModel)dataGrid.SelectedItem;
 
-            if (codeStyleItem != null)
+            if (codeStyleItem != null && codeStyleItem.IsVisible)
             {
                 ViewModel.UpdatePreview(codeStyleItem.GetPreview());
+            }
+        }
+
+        private void Options_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            DataGridRow row = e.Row;
+
+            if (!((SimpleCodeStyleOptionViewModel)e.Row.Item).IsVisible)
+            {
+                // set height for header row.
+                // the default height won't work well here because this doesn't have combos
+                // while the other rows have one.
+                row.Height = 24;
             }
         }
 

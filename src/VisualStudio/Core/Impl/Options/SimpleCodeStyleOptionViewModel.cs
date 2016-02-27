@@ -18,6 +18,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
 
         // data binding
         public string Description { get; set; }
+        public bool IsVisible { get; set; }
 
         public List<CodeStylePreference> Preferences { get; set; }
 
@@ -60,12 +61,27 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         protected AbstractOptionPreviewViewModel Info { get; }
         public IOption Option { get; }
 
+        public static SimpleCodeStyleOptionViewModel Header(string text)
+        {
+            return new SimpleCodeStyleOptionViewModel(text);
+        }
+
         internal virtual string GetPreview() => _selectedPreference.IsChecked ? _truePreview : _falsePreview;
 
         //public SimpleCodeStyleOptionViewModel(IOption option, string description, string preview, AbstractOptionPreviewViewModel info, OptionSet options)
         //    : this(option, description, preview, preview, info, options)
         //{
         //}
+
+        private SimpleCodeStyleOptionViewModel(string header)
+        {
+            Description = header;
+            Preferences = GetDefaultPreferences();
+            NotificationPreferences = GetDefaultNotifications();
+            _selectedPreference = null;
+            _selectedNotificationPreference = null;
+            IsVisible = false;
+        }
 
         public SimpleCodeStyleOptionViewModel(
             IOption option,
@@ -85,7 +101,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             Description = description;
             Preferences = preferences ?? GetDefaultPreferences();
             NotificationPreferences = notificationPreferences ?? GetDefaultNotifications();
-
+            IsVisible = true;
 
             var codeStyleOption = ((SimpleCodeStyleOption)options.GetOption(new OptionKey(option, option.IsPerLanguage ? info.Language : null)));
             _selectedPreference = Preferences.Single(c => c.IsChecked == codeStyleOption.IsChecked);
@@ -112,6 +128,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         {
             return new List<CodeStylePreference>
             {
+                // TODO: move to resx for loc.
                 new CodeStylePreference("Yes", true),
                 new CodeStylePreference("No", false),
             };
