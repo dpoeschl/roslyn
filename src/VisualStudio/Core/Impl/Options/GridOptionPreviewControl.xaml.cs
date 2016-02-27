@@ -36,6 +36,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             }
         }
 
+        // TODO: do this with DataBinding.
         private void Options_LoadingRow(object sender, DataGridRowEventArgs e)
         {
             DataGridRow row = e.Row;
