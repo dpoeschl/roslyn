@@ -62,6 +62,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
         protected AbstractOptionPreviewViewModel Info { get; }
         public IOption Option { get; }
 
+        public string GroupName { get; set; }
+
         public static SimpleCodeStyleOptionViewModel Header(string text)
         {
             return new SimpleCodeStyleOptionViewModel(text);
@@ -92,6 +94,7 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             string falsePreview,
             AbstractOptionPreviewViewModel info,
             OptionSet options,
+            string groupName,
             List<CodeStylePreference> preferences = null,
             List<NotificationOptionViewModel> notificationPreferences = null)
         {
@@ -104,7 +107,8 @@ namespace Microsoft.VisualStudio.LanguageServices.Implementation.Options
             Preferences = preferences ?? GetDefaultPreferences();
             NotificationPreferences = notificationPreferences ?? GetDefaultNotifications();
             IsVisible = true;
-            DescriptionMargin = 24d;
+            DescriptionMargin = 12d;
+            GroupName = groupName;
 
             var codeStyleOption = ((SimpleCodeStyleOption)options.GetOption(new OptionKey(option, option.IsPerLanguage ? info.Language : null)));
             _selectedPreference = Preferences.Single(c => c.IsChecked == codeStyleOption.IsChecked);
