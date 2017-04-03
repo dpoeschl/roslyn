@@ -16,9 +16,9 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.InlineRename.HighlightTag
     {
         public ValidTagDefinition()
         {
-            this.Border = new Pen(Brushes.LightGreen, thickness: 0.5);
-            this.BackgroundColor = Colors.LightGreen;
+            this.Border = new Pen(Brushes.Blue, thickness: 1);
             this.DisplayName = EditorFeaturesResources.Inline_Rename;
+            this.BackgroundColor = Colors.White;
             this.ZOrder = 5;
         }
     }
