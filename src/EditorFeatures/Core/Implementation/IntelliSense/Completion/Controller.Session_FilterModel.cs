@@ -498,7 +498,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
 
             private static int GetRecentItemIndex(ImmutableArray<string> recentItems, CompletionItem item)
             {
-                var index = recentItems.IndexOf(item.DisplayText);
+                var index = recentItems.IndexOf(item.Properties.TryGetValue(CompletionHelper.DisplayTextForMatching, out var matchText) ? matchText : item.DisplayText);
                 return -index;
             }
 
