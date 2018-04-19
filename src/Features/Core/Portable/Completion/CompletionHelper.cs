@@ -22,7 +22,7 @@ namespace Microsoft.CodeAnalysis.Completion
         // Support for completion items with extra decorative characters in their DisplayText.
         // This allows bolding and MRU to operate on the "real" display text (without text
         // decorations). This should be a substring of the corresponding DisplayText.
-        internal static string DisplayTextForMatching = nameof(DisplayTextForMatching);
+        private static string DisplayTextForMatching = nameof(DisplayTextForMatching);
 
         public CompletionHelper(bool isCaseSensitive)
         {
@@ -257,5 +257,8 @@ namespace Microsoft.CodeAnalysis.Completion
 
             return 0;
         }
+
+        internal static string GetDisplayTextForMatching(CompletionItem item)
+            => item.Properties.TryGetValue(DisplayTextForMatching, out var displayText) ? displayText : item.DisplayText;
     }
 }

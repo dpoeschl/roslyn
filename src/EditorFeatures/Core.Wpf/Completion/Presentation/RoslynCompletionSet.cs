@@ -100,7 +100,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.P
             {
                 if (!_displayTextToBoldingTextMap.ContainsKey(item.DisplayText))
                 {
-                    _displayTextToBoldingTextMap.Add(item.DisplayText, item.Properties.TryGetValue(CompletionHelper.DisplayTextForMatching, out var displayTextForBolding) ? displayTextForBolding : item.DisplayText);
+                    _displayTextToBoldingTextMap.Add(item.DisplayText, CompletionHelper.GetDisplayTextForMatching(item));
                 }
             }
 
