@@ -73,3 +73,9 @@ build/NuGetAdditionalFiles/RunVbc text eol=lf
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# Mark code as "generated" when we don't want diffs shown by default
+# in the GitHub UI.
+###############################################################################
+*.xlf linguist-generated=true
