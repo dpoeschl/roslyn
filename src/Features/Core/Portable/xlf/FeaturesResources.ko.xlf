@@ -9,7 +9,7 @@
       </trans-unit>
       <trans-unit id="Add_project_reference_to_0">
         <source>Add project reference to '{0}'.</source>
-        <target state="translated">프로젝트 참조를 '{0}'에 추가합니다.</target>
+        <target state="translated">프로젝트 참조를 '{0}'에 추가합니다. Test</target>
         <note />
       </trans-unit>
       <trans-unit id="Add_reference_to_0">

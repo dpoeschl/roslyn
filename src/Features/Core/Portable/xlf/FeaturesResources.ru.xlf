@@ -9,7 +9,7 @@
       </trans-unit>
       <trans-unit id="Add_project_reference_to_0">
         <source>Add project reference to '{0}'.</source>
-        <target state="translated">Добавьте ссылку на проект в "{0}".</target>
+        <target state="translated">Добавьте ссылку на проект в "{0}". Test</target>
         <note />
       </trans-unit>
       <trans-unit id="Add_reference_to_0">

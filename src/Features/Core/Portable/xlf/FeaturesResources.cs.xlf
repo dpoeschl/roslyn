@@ -4,7 +4,7 @@
     <body>
       <trans-unit id="Add_parameter_to_0_and_overrides_implementations">
         <source>Add parameter to '{0}' (and overrides/implementations)</source>
-        <target state="new">Add parameter to '{0}' (and overrides/implementations)</target>
+        <target state="new">Add parameter to '{0}' (and overrides/implementations) Test</target>
         <note />
       </trans-unit>
       <trans-unit id="Add_project_reference_to_0">
