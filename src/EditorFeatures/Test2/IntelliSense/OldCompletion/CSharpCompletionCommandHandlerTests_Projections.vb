@@ -3,13 +3,17 @@
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.VisualStudio.Text.Projection
 
-Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
+Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense.OldCompletion
+    ''' <summary>
+    ''' This is a test file corresponding to the old Completion service which we are going to turn off after migration to the new one.
+    ''' We should keep this file up-to-date and on par with the new file until then.
+    ''' </summary>
     <[UseExportProvider]>
     Public Class CSharpCompletionCommandHandlerTests_Projections
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSimpleWithJustSubjectBuffer() As System.Threading.Tasks.Task
-            Using state = TestState.CreateCSharpTestState(
+            Using state = OldCompletionTestState.CreateCSharpTestState(
                 <Document><![CDATA[
 using System;
 
@@ -34,9 +38,9 @@ public override void Execute() {
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27446"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestAfterDot() As System.Threading.Tasks.Task
-            Using state = TestState.CreateCSharpTestState(
+            Using state = OldCompletionTestState.CreateCSharpTestState(
                 <Document><![CDATA[
 {|S2:
 class C
@@ -73,9 +77,9 @@ class C
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27446"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestInObjectCreationExpression() As System.Threading.Tasks.Task
-            Using state = TestState.CreateCSharpTestState(
+            Using state = OldCompletionTestState.CreateCSharpTestState(
                 <Document><![CDATA[
 {|S2:
 class C
@@ -112,7 +116,7 @@ class C
         <WorkItem(771761, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/771761")>
         <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/24846"), Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestRegionCompletionCommitFormatting() As System.Threading.Tasks.Task
-            Using state = TestState.CreateCSharpTestState(
+            Using state = OldCompletionTestState.CreateCSharpTestState(
                 <Document><![CDATA[
 {|S2:
 class C

@@ -13,13 +13,17 @@ Imports Microsoft.VisualStudio.Text.Operations
 Imports Microsoft.VisualStudio.Text.Projection
 Imports Roslyn.Utilities
 
-Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
+Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense.OldCompletion
+    ''' <summary>
+    ''' This is a test file corresponding to the old Completion service which we are going to turn off after migration to the new one.
+    ''' We should keep this file up-to-date and on par with the new file until then.
+    ''' </summary>
     <[UseExportProvider]>
     Public Class VisualBasicCompletionCommandHandlerTests
         <WorkItem(546208, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546208")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function MultiWordKeywordCommitBehavior() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class C
     Sub M()
@@ -39,7 +43,7 @@ End Class
         <WorkItem(546208, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546208")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function MultiWordKeywordCommitBehavior2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class C
     Sub M()
@@ -58,7 +62,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionNotShownWhenBackspacingThroughWhitespace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                   Module M
                                       Sub Goo()
@@ -74,7 +78,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion), WorkItem(541032, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/541032")>
         Public Async Function CompletionNotShownWhenBackspacingThroughNewline() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Module Program
     Sub Main()
@@ -92,7 +96,7 @@ End Module
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionAdjustInsertionText_CommitsOnOpenParens1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                   Module M
                                     Sub FogBar()
@@ -112,7 +116,7 @@ End Module
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionUpAfterDot() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                 Class Program
                                     Sub Main(args As String())
@@ -130,7 +134,7 @@ End Module
         <WorkItem(546432, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546432")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Sub ImplementsCompletionFaultTolerance()
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                   Imports System
                                   Class C
@@ -143,9 +147,9 @@ End Module
         End Sub
 
         <WorkItem(5487, "https://github.com/dotnet/roslyn/issues/5487")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27453"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestCommitCharTypedAtTheBeginingOfTheFilterSpan() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Fuction F() As Boolean
@@ -169,7 +173,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionAdjustInsertionText_CommitsOnOpenParens2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                   Module M
                                     Sub FogBar(Of T)()
@@ -187,17 +191,35 @@ End Class
             End Using
         End Function
 
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function CompletionDismissedAfterEscape1() As Task
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
+                              <document>
+                                Class Program
+                                    Sub Main(args As String())
+                                        Program$$
+                                    End Sub
+                                End Class
+                              </document>)
+
+                Await state.AssertNoCompletionSession()
+                state.SendTypeChars(".")
+                Await state.AssertCompletionSession()
+                state.SendEscape()
+                Await state.AssertNoCompletionSession()
+            End Using
+        End Function
+
         <WorkItem(543497, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543497")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestEnterOnSoftSelection1() As Task
-            ' Code must be left-aligned because of https://github.com/dotnet/roslyn/issues/27988
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
-Class Program
-    Shared Sub Main(args As String())
-        Program.$$
-    End Sub
-End Class
+                                Class Program
+                                    Shared Sub Main(args As String())
+                                        Program.$$
+                                    End Sub
+                                End Class
                               </document>)
 
                 state.SendInvokeCompletionList()
@@ -213,7 +235,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionTestTab1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                   Module M
                                     Sub FogBar()
@@ -234,7 +256,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DotIsInserted() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                 Class Program
                                     Sub Main(args As String())
@@ -249,9 +271,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27655"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestReturn1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
 Class Program
     Sub Main(args As String())
@@ -270,9 +292,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
-        Public Async Function TestFirstCharacterDoesNotFilter1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestDown1() As Task
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
 Namespace N
     Class A
@@ -289,13 +311,53 @@ Class Program
 End Class
                               </document>)
                 state.SendTypeChars(".A")
-                Await state.AssertCompletionSession(numberOfItems:=3)
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(displayText:="A", isHardSelected:=True)
+                state.SendDownKey()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Await state.AssertSelectedCompletionItem(displayText:="B", isHardSelected:=True)
+                state.SendDownKey()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Await state.AssertSelectedCompletionItem(displayText:="C", isHardSelected:=True)
+                state.SendDownKey()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Await state.AssertSelectedCompletionItem(displayText:="C", isHardSelected:=True)
+                state.SendPageUp()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Await state.AssertSelectedCompletionItem(displayText:="A", isHardSelected:=True)
+                state.SendUpKey()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Await state.AssertSelectedCompletionItem(displayText:="A", isHardSelected:=True)
             End Using
         End Function
 
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestFirstCharacterDoesNotFilter1() As Task
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
+                              <document>
+Namespace N
+    Class A
+    End Class
+    Class B
+    End Class
+    Class C
+    End Class
+End Namespace
+Class Program
+    Sub Main(args As String())
+        N$$
+    End Sub
+End Class
+                              </document>)
+                state.SendTypeChars(".A")
+                Await state.AssertCompletionSession()
+                Assert.Equal(3, state.CurrentCompletionPresenterSession.CompletionItems.Count)
+            End Using
+        End Function
+
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSecondCharacterDoesFilter1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
 Namespace N
     Class AAA
@@ -315,16 +377,16 @@ End Class
                               </document>)
                 state.SendTypeChars(".A")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertCompletionSession(numberOfItems:=4)
+                Assert.Equal(4, state.CurrentCompletionPresenterSession.CompletionItems.Count)
                 state.SendTypeChars("A")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertCompletionSession(numberOfItems:=2)
+                Assert.Equal(2, state.CurrentCompletionPresenterSession.CompletionItems.Count)
             End Using
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNavigateSoftToHard() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                 Class Program
                                     Shared Sub Main(args As String())
@@ -342,87 +404,86 @@ End Class
             End Using
         End Function
 
-        '<WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        'Public Async Function TestBackspaceBeforeCompletedComputation() As Task
-        '    ' Simulate a very slow completion provider.
-        '    Dim e = New ManualResetEvent(False)
-        '    Dim provider = CreateTriggeredCompletionProvider(e)
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestBackspaceBeforeCompletedComputation() As Task
+            ' Simulate a very slow completion provider.
+            Dim e = New ManualResetEvent(False)
+            Dim provider = CreateTriggeredCompletionProvider(e)
 
-        '    Using state = TestState.CreateVisualBasicTestState(
-        '                      <document>
-        '                        Class Program
-        '                            Shared Sub Main(args As String())
-        '                                Program$$
-        '                            End Sub
-        '                        End Class
-        '                      </document>, extraCompletionProviders:={provider})
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
+                              <document>
+                                Class Program
+                                    Shared Sub Main(args As String())
+                                        Program$$
+                                    End Sub
+                                End Class
+                              </document>, extraCompletionProviders:={provider})
 
-        '        Await state.AssertNoCompletionSession()
-        '        state.SendTypeChars(".M")
+                Await state.AssertNoCompletionSession()
+                state.SendTypeChars(".M")
 
-        '        ' We should not have a session now.  Note: do not block as this will just hang things
-        '        ' since the provider will not return.
-        '        Await state.AssertNoCompletionSession(block:=False)
+                ' We should not have a session now.  Note: do not block as this will just hang things
+                ' since the provider will not return.
+                Await state.AssertNoCompletionSession(block:=False)
 
-        '        ' Now, navigate back.
-        '        state.SendBackspace()
+                ' Now, navigate back.
+                state.SendBackspace()
 
-        '        ' allow the provider to continue
-        '        e.Set()
+                ' allow the provider to continue
+                e.Set()
 
-        '        ' At this point, completion will be available since the caret is still within the model's span.
-        '        Await state.AssertCompletionSession()
+                ' At this point, completion will be available since the caret is still within the model's span.
+                Await state.AssertCompletionSession()
 
-        '        ' Now, navigate back again.  Completion should be dismissed
-        '        state.SendBackspace()
-        '        Await state.AssertNoCompletionSession()
-        '    End Using
-        'End Function
+                ' Now, navigate back again.  Completion should be dismissed
+                state.SendBackspace()
+                Await state.AssertNoCompletionSession()
+            End Using
+        End Function
 
-        '<WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        'Public Async Function TestNavigationBeforeCompletedComputation() As Task
-        '    ' Simulate a very slow completion provider.
-        '    Dim e = New ManualResetEvent(False)
-        '    Dim provider = CreateTriggeredCompletionProvider(e)
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNavigationBeforeCompletedComputation() As Task
+            ' Simulate a very slow completion provider.
+            Dim e = New ManualResetEvent(False)
+            Dim provider = CreateTriggeredCompletionProvider(e)
 
-        '    Using state = TestState.CreateVisualBasicTestState(
-        '                      <document>
-        '                        Class Program
-        '                            Shared Sub Main(args As String())
-        '                                Program$$
-        '                            End Sub
-        '                        End Class
-        '                      </document>, extraCompletionProviders:={provider})
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
+                              <document>
+                                Class Program
+                                    Shared Sub Main(args As String())
+                                        Program$$
+                                    End Sub
+                                End Class
+                              </document>, extraCompletionProviders:={provider})
 
-        '        Await state.AssertNoCompletionSession()
-        '        state.SendTypeChars(".Ma")
+                Await state.AssertNoCompletionSession()
+                state.SendTypeChars(".Ma")
 
-        '        ' We should not have a session now.  Note: do not block as this will just hang things
-        '        ' since the provider will not return.
-        '        Await state.AssertNoCompletionSession(block:=False)
+                ' We should not have a session now.  Note: do not block as this will just hang things
+                ' since the provider will not return.
+                Await state.AssertNoCompletionSession(block:=False)
 
-        '        ' Now, navigate using the caret.
-        '        state.SendMoveToPreviousCharacter()
+                ' Now, navigate using the caret.
+                state.SendMoveToPreviousCharacter()
 
-        '        ' allow the provider to continue
-        '        e.Set()
+                ' allow the provider to continue
+                e.Set()
 
-        '        ' We should not have a session since we tear things down if we see a caret move
-        '        ' before the providers have returned.
-        '        Await state.AssertNoCompletionSession()
-        '    End Using
-        'End Function
+                ' We should not have a session since we tear things down if we see a caret move
+                ' before the providers have returned.
+                Await state.AssertNoCompletionSession()
+            End Using
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNavigateOutOfItemChangeSpan() As Task
-            ' Code must be left-aligned because of https://github.com/dotnet/roslyn/issues/27988
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
-Class Program
-    Shared Sub Main(args As String())
-        Program$$
-    End Sub
-End Class
+                                Class Program
+                                    Shared Sub Main(args As String())
+                                        Program$$
+                                    End Sub
+                                End Class
                               </document>)
 
                 Await state.AssertNoCompletionSession()
@@ -439,7 +500,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestUndo1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                 Class Program
                                     Shared Sub Main(args As String())
@@ -459,8 +520,67 @@ End Class
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestCommitAfterNavigation() As Task
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
+                              <document>
+Namespace N
+    Class A
+    End Class
+    Class B
+    End Class
+    Class C
+    End Class
+End Namespace
+Class Program
+    Sub Main(args As String())
+        N$$
+    End Sub
+End Class
+                              </document>)
+                state.SendTypeChars(".A")
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(displayText:="A", isHardSelected:=True)
+                state.SendDownKey()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Await state.AssertSelectedCompletionItem(displayText:="B", isHardSelected:=True)
+                state.SendTab()
+                Await state.WaitForAsynchronousOperationsAsync()
+                Assert.Contains(".B", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+            End Using
+        End Function
+
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestSelectCompletionItemThroughPresenter() As Task
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
+                              <document>
+Namespace N
+    Class A
+    End Class
+    Class B
+    End Class
+    Class C
+    End Class
+End Namespace
+Class Program
+    Sub Main(args As String())
+        N$$
+    End Sub
+End Class
+                              </document>)
+                state.SendTypeChars(".A")
+                Await state.AssertCompletionSession()
+                Await state.AssertSelectedCompletionItem(displayText:="A", isHardSelected:=True)
+                Await state.WaitForAsynchronousOperationsAsync()
+                state.SendSelectCompletionItemThroughPresenterSession(state.CurrentCompletionPresenterSession.CompletionItems.First(
+                                                           Function(i) i.DisplayText = "B"))
+                state.SendTab()
+                Assert.Contains(".B", state.GetLineTextFromCaretPosition(), StringComparison.Ordinal)
+            End Using
+        End Function
+
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestFiltering1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <document>
 Imports System
 
@@ -478,7 +598,7 @@ End Class</document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestMSCorLibTypes() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <document>
 Imports System
 
@@ -493,7 +613,7 @@ End Class</document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestDescription1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <document>
                       <![CDATA[Imports System
 
@@ -515,7 +635,7 @@ End Class]]></document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestObjectCreationPreselection1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Imports System
 Imports System.Collections.Generic
@@ -549,14 +669,14 @@ End Module]]></Document>)
         End Function
 
         <WorkItem(287, "https://github.com/dotnet/roslyn/issues/287")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NotEnumPreselectionAfterBackspace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Enum E
     Bat
 End Enum
- 
+
 Class C
     Sub Test(param As E)
         Dim b As E
@@ -571,9 +691,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(543496, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543496")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27655"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNumericLiteralWithNoMatch() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document>
 Imports System
 
@@ -600,9 +720,9 @@ End Module</Document>.NormalizedValue, state.GetDocumentText())
         End Function
 
         <WorkItem(543496, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543496")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27655"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNumericLiteralWithPartialMatch() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document>
 Imports System
 
@@ -631,9 +751,9 @@ End Module</Document>.NormalizedValue, state.GetDocumentText())
         End Function
 
         <WorkItem(543496, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543496")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27655"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNumbersAfterLetters() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document>
 Imports System
 
@@ -663,7 +783,7 @@ End Module</Document>.NormalizedValue, state.GetDocumentText())
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNotAfterTypingDotAfterIntegerLiteral() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 class c
     sub M()
@@ -679,7 +799,7 @@ end class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestAfterExplicitInvokeAfterDotAfterIntegerLiteral() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 class c
     sub M()
@@ -695,9 +815,9 @@ end class
         End Function
 
         <WorkItem(543669, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543669")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestDeleteWordToLeft() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 class c
     sub M()
@@ -713,9 +833,9 @@ end class
         End Function
 
         <WorkItem(543617, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543617")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestCompletionGenericWithOpenParen() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 class c
     sub Goo(Of X)()
@@ -733,7 +853,7 @@ end class
         <WorkItem(543617, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/543617")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestCompletionGenericWithSpace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 class c
     sub Goo(Of X)()
@@ -747,9 +867,9 @@ end class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitForImportsStatement1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                   $$
                               </Document>)
@@ -765,7 +885,7 @@ end class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitForImportsStatement2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                   $$
                               </Document>)
@@ -779,9 +899,9 @@ end class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitForImportsStatement3() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document>
                                 $$
                             </Document>)
@@ -796,18 +916,18 @@ end class
         End Function
 
         <WorkItem(544190, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544190")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DoNotInsertEqualsForNamedParameterCommitWithColon() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document>
     Class Class1
         Sub Method()
             Test($$
         End Sub
         Sub Test(Optional x As Integer = 42)
- 
+
         End Sub
-    End Class 
+    End Class
                             </Document>)
 
                 state.SendTypeChars("x:")
@@ -819,16 +939,16 @@ end class
         <WorkItem(544190, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544190")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DoInsertEqualsForNamedParameterCommitWithSpace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document>
     Class Class1
         Sub Method()
             Test($$
         End Sub
         Sub Test(Optional x As Integer = 42)
- 
+
         End Sub
-    End Class 
+    End Class
                             </Document>)
 
                 state.SendTypeChars("x")
@@ -841,7 +961,7 @@ end class
         <WorkItem(544150, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544150")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function ConsumeHashForPreprocessorCompletion() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document>
 $$
                             </Document>)
@@ -855,7 +975,7 @@ $$
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function EnumCompletionTriggeredOnSpace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Enum Numeros
     Uno
@@ -885,9 +1005,9 @@ End Class
         End Function
 
         <WorkItem(544297, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544297")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestVerbatimNamedIdentifierFiltering() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class Class1
     Private Sub Test([string] As String)
@@ -898,41 +1018,42 @@ End Class
 
                 state.SendTypeChars("s")
                 Await state.AssertCompletionSession()
-                Assert.True(state.CompletionItemsContainsAll({"string:="}))
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "string:="))
                 state.SendTypeChars("t")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Assert.True(state.CompletionItemsContainsAll({"string:="}))
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "string:="))
             End Using
         End Function
 
         <WorkItem(544299, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544299")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27692"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestExclusiveNamedParameterCompletion() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class Class1
     Private Sub Test()
         Goo(bool:=False,$$
     End Sub
- 
+
     Private Sub Goo(str As String, character As Char)
     End Sub
- 
+
     Private Sub Goo(str As String, bool As Boolean)
     End Sub
 End Class
                               </Document>)
 
                 state.SendTypeChars(" ")
-                Await state.AssertCompletionSession(numberOfItems:=1)
-                Assert.True(state.CompletionItemsContainsAll({"str:="}))
+                Await state.AssertCompletionSession()
+                Assert.Equal(1, state.CurrentCompletionPresenterSession.CompletionItems.Count)
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "str:="))
             End Using
         End Function
 
         <WorkItem(544299, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544299")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27692"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestExclusiveNamedParameterCompletion2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class Goo
     Private Sub Test()
@@ -952,15 +1073,19 @@ End Class
                               </Document>)
 
                 state.SendTypeChars(" ")
-                Await state.AssertCompletionSession(numberOfItems:=3)
-                Assert.True(state.CompletionItemsContainsAll({"b:=", "num:=", "str:=", "dbl:="}))
+                Await state.AssertCompletionSession()
+                Assert.Equal(3, state.CurrentCompletionPresenterSession.CompletionItems.Count)
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "b:="))
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "num:="))
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "str:="))
+                Assert.False(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(i) i.DisplayText = "dbl:="))
             End Using
         End Function
 
         <WorkItem(544471, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544471")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestDontCrashOnEmptyParameterList() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 &lt;Obsolete()$$&gt;
                               </Document>)
@@ -973,7 +1098,7 @@ End Class
         <WorkItem(544628, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544628")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function OnlyMatchOnLowercaseIfPrefixWordMatch() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Module Program
     $$
@@ -989,7 +1114,7 @@ End Module
         <WorkItem(544989, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/544989")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function MyBaseFinalize() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class C
     Protected Overrides Sub Finalize()
@@ -1006,9 +1131,9 @@ End Class
         End Function
 
         <WorkItem(551117, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/551117")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNamedParameterSortOrder() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System
 Module Program
@@ -1030,7 +1155,7 @@ End Module
         <WorkItem(546810, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546810")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestLineContinuationCharacter() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System
 Module Program
@@ -1047,9 +1172,9 @@ End Module
         End Function
 
         <WorkItem(547287, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/547287")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNumberDismissesCompletion() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System
 Module Program
@@ -1080,9 +1205,9 @@ End Module
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27446"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestProjections() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 {|S1:
 Imports System
@@ -1173,9 +1298,9 @@ End Module          </text>.NormalizedValue, state.GetDocumentText(), StringComp
         End Function
 
         <WorkItem(622957, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/622957")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestBangFiltersInDocComment() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 ''' $$
 Public Class TestClass
@@ -1190,9 +1315,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionUpAfterBackSpacetoWord() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                   Public E$$
                               </Document>)
@@ -1206,7 +1331,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NoCompletionAfterBackspaceInStringLiteral() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                 Sub Goo()
                                     Dim z = "aa$$"
@@ -1218,9 +1343,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionUpAfterDeleteDot() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                 Sub Goo()
                                     Dim z = "a"
@@ -1235,7 +1360,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NotCompletionUpAfterDeleteRParen() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                 Sub Goo()
                                     "a".ToString()$$
@@ -1249,7 +1374,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NotCompletionUpAfterDeleteLParen() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                 Sub Goo()
                                     "a".ToString($$
@@ -1263,7 +1388,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NotCompletionUpAfterDeleteComma() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                 Sub Goo(x as Integer, y as Integer)
                                     Goo(1,$$)
@@ -1275,9 +1400,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionAfterDeleteKeyword() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
                                 Sub Goo(x as Integer, y as Integer)
                                     Goo(1,2)
@@ -1292,7 +1417,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NoCompletionOnBackspaceAtBeginningOfFile() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>$$</Document>)
 
                 state.SendBackspace()
@@ -1303,7 +1428,7 @@ End Class
 
         <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionUpAfterLeftCurlyBrace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                 Imports System
                                 Imports System.Collections.Generic
@@ -1324,7 +1449,7 @@ End Class
 
         <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CompletionUpAfterLeftAngleBracket() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <document>
                                 $$
                                 Module Program
@@ -1341,7 +1466,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function InvokeCompletionDoesNotFilter() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1359,7 +1484,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function InvokeCompletionSelectsWithoutRegardToCaretPosition() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1377,7 +1502,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function InvokeCompletionBeforeWordDoesNotSelect() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1392,9 +1517,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspaceCompletionInvokedSelectedAndUnfiltered() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1410,9 +1535,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27431"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function ListDismissedIfNoMatches() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1431,7 +1556,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function InvokeCompletionComesUpEvenIfNoMatches() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1446,9 +1571,9 @@ End Class
         End Function
 
         <WorkItem(674422, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/674422")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspaceInvokeCompletionComesUpEvenIfNoMatches() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1465,9 +1590,9 @@ End Class
         End Function
 
         <WorkItem(674366, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/674366")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspaceCompletionSelects() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1483,9 +1608,9 @@ End Class
         End Function
 
         <WorkItem(675555, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/675555")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspaceCompletionNeverFilters() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1496,16 +1621,16 @@ End Class
             ]]></Document>)
                 state.SendBackspace()
                 Await state.AssertCompletionSession()
-                Assert.True(state.CompletionItemsContainsAll({"AccessViolationException"}))
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(c) c.DisplayText = "AccessViolationException"))
                 state.SendBackspace()
                 Await state.AssertCompletionSession()
-                Assert.True(state.CompletionItemsContainsAll({"AccessViolationException"}))
+                Assert.True(state.CurrentCompletionPresenterSession.CompletionItems.Any(Function(c) c.DisplayText = "AccessViolationException"))
             End Using
         End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TabAfterQuestionMarkInEmptyLine() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1520,9 +1645,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27691"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TabAfterTextFollowedByQuestionMark() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1538,9 +1663,9 @@ End Class
         End Function
 
         <WorkItem(669942, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/669942")>
-        <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DistinguishItemsWithDifferentGlyphs() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Imports System.Linq
@@ -1556,14 +1681,14 @@ End Class
             ]]></Document>)
                 state.SendTypeChars("selec")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertCompletionSession(numberOfItems:=2)
+                Assert.Equal(state.CurrentCompletionPresenterSession.CompletionItems.Count, 2)
             End Using
         End Function
 
         <WorkItem(670149, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/670149")>
         <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TabAfterNullableFollowedByQuestionMark() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1579,7 +1704,7 @@ End Class
         <WorkItem(672474, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/672474")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestInvokeSnippetCommandDismissesCompletion() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>$$</Document>)
 
                 state.SendTypeChars("Imp")
@@ -1592,7 +1717,7 @@ End Class
         <WorkItem(672474, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/672474")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSurroundWithCommandDismissesCompletion() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>$$</Document>)
 
                 state.SendTypeChars("Imp")
@@ -1605,7 +1730,7 @@ End Class
         <WorkItem(716117, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/716117")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function XmlCompletionNotTriggeredOnBackspaceInText() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document><![CDATA[
 ''' <summary>
 ''' text$$
@@ -1620,9 +1745,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(716117, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/716117")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function XmlCompletionNotTriggeredOnBackspaceInTag() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document><![CDATA[
 ''' <summary$$>
 ''' text
@@ -1638,9 +1763,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(674415, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/674415")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspacingLastCharacterDismisses() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>$$</Document>)
 
                 state.SendTypeChars("A")
@@ -1651,9 +1776,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(719977, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/719977")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function HardSelectionWithBuilderAndOneExactMatch() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
 <Document>Module M
     Public $$
 End Module</Document>)
@@ -1666,9 +1791,9 @@ End Module</Document>)
         End Function
 
         <WorkItem(828603, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/828603")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function SoftSelectionWithBuilderAndNoExactMatch() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
 <Document>Module M
     Public $$
 End Module</Document>)
@@ -1681,16 +1806,16 @@ End Module</Document>)
         End Function
 
         <WorkItem(792569, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/792569")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27655"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitOnEnter() As Task
             Dim expected = <Document>Module M
     Sub Main()
-        Main()
+        Main
 
     End Sub
 End Module</Document>.Value.Replace(vbLf, vbCrLf)
 
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
 <Document>Module M
     Sub Main()
         Ma$$i
@@ -1705,9 +1830,9 @@ End Module</Document>)
         End Function
 
         <WorkItem(546208, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/546208")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27693"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact(), Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function SelectKeywordFirst() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Class C
     Sub M()
@@ -1730,7 +1855,7 @@ End Class
         <WorkItem(828392, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/828392")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function ConstructorFiltersAsNew() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Public Class Base
 Public Sub New(x As Integer)
@@ -1753,7 +1878,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NoUnmentionableTypeInObjectCreation() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Public Class C
     Sub Goo()
@@ -1770,7 +1895,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function FilterPreferEnum() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Enum E
     Goo
@@ -1792,9 +1917,9 @@ End Class</Document>)
         End Function
 
         <WorkItem(883295, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/883295")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function InsertOfOnSpace() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System.Threading.Tasks
 Public Class C
@@ -1816,7 +1941,7 @@ End Class
         <WorkItem(883295, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/883295")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DoNotInsertOfOnTab() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System.Threading.Tasks
 Public Class C
@@ -1836,16 +1961,16 @@ End Class
         <WorkItem(899414, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/899414")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function NotInPartialMethodDeclaration() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Module Module1
- 
+
     Sub Main()
- 
+
     End Sub
- 
+
 End Module
- 
+
 Public Class Class2
     Partial Private Sub PartialMethod(ByVal x As Integer)
         $$
@@ -1858,7 +1983,7 @@ End Class</Document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestCompletionInLinkedFiles() As Task
-            Using state = TestState.CreateTestStateFromWorkspace(
+            Using state = OldCompletionTestState.CreateTestStateFromWorkspace(
                 <Workspace>
                     <Project Language="Visual Basic" CommonReferences="true" AssemblyName="VBProj" PreprocessorSymbols="Thing2=True">
                         <Document FilePath="C.vb">
@@ -1901,9 +2026,9 @@ End Class
         End Function
 
         <WorkItem(916452, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/916452")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27447"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function SoftSelectedWithNoFilterText() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System
 Class C
@@ -1917,9 +2042,9 @@ End Class</Document>)
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function EnumSortingOrder() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                               <Document>
 Imports System
 Class C
@@ -1939,12 +2064,11 @@ End Class</Document>)
         <WorkItem(951726, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/951726")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DismissUponSave() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Class C
     $$
 End Class]]></Document>)
-
                 state.SendTypeChars("Su")
                 Await state.WaitForAsynchronousOperationsAsync()
                 Await state.AssertSelectedCompletionItem("Sub")
@@ -1955,9 +2079,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(969794, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/969794")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DeleteCompletionInvokedSelectedAndUnfiltered() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1974,9 +2098,9 @@ End Class
 
         <WorkItem(871755, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/871755")>
         <WorkItem(954556, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/954556")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function FilterPrefixOnlyOnBackspace1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -1994,7 +2118,7 @@ End Class
         <WorkItem(969040, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/969040")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspaceTriggerOnlyIfOptionEnabled() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -2008,9 +2132,9 @@ End Class
         End Function
 
         <WorkItem(957450, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/957450")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function KeywordsForIntrinsicsDeduplicated() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -2028,9 +2152,9 @@ End Class
         End Function
 
         <WorkItem(957450, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/957450")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function KeywordDeduplicationLeavesEscapedIdentifiers() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class [Double]
@@ -2050,9 +2174,9 @@ End Class
         End Function
 
         <WorkItem(957450, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/957450")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestEscapedItemCommittedWithCloseBracket() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class [Interface]
@@ -2072,7 +2196,7 @@ End Class
         <WorkItem(1075298, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1075298")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitOnQuestionMarkForConditionalAccess() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Imports System
 Class G
@@ -2090,13 +2214,13 @@ End Class
         <WorkItem(1659, "https://github.com/dotnet/roslyn/issues/1659")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DismissOnSelectAllCommand() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Class C
     Sub goo()
         $$]]></Document>)
                 ' Note: the caret is at the file, so the Select All command's movement
-                ' of the caret to the end of the selection isn't responsible for 
+                ' of the caret to the end of the selection isn't responsible for
                 ' dismissing the session.
                 state.SendInvokeCompletionList()
                 Await state.AssertCompletionSession()
@@ -2108,7 +2232,7 @@ Class C
         <WorkItem(3088, "https://github.com/dotnet/roslyn/issues/3088")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function DoNotPreferParameterNames() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Module Program
     Sub Main(args As String())
@@ -2129,7 +2253,7 @@ End Module]]></Document>)
         <WorkItem(4892, "https://github.com/dotnet/roslyn/issues/4892")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BooleanPreselection1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Module Program
     Sub Main(args As String())
@@ -2149,7 +2273,7 @@ End Module]]></Document>)
         <WorkItem(4892, "https://github.com/dotnet/roslyn/issues/4892")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BooleanPreselection2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Module Program
     Sub Main(args As String())
@@ -2172,7 +2296,7 @@ End Module]]></Document>)
         <WorkItem(4892, "https://github.com/dotnet/roslyn/issues/4892")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BooleanPreselection3() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 
 Module Program
@@ -2197,7 +2321,7 @@ End Module]]></Document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselection1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 Imports System.Threading
 Module Program
@@ -2213,7 +2337,7 @@ End Module]]></Document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselection2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 Module Program
     Sub Main(args As String())
@@ -2229,14 +2353,14 @@ End Module]]></Document>)
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselection3() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 Class D
 End Class
 Class Program
 
     Sub Main(string() args)
-    
+
        Dim cw = 7
        Dim cx as D = new D()
        Dim  cx2 as D = $$
@@ -2251,14 +2375,14 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselectionLocalsOverType() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
-Class A 
+Class A
 End Class
 Class Program
 
     Sub Main(string() args)
-    
+
        Dim  cx = new A()
        Dim cx2 as A = $$
     End Sub
@@ -2272,16 +2396,16 @@ End Class
 
         <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/6942"), Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselectionConvertibility1() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
-Mustinherit Class C 
+Mustinherit Class C
 End Class
-Class D 
+Class D
 inherits C
 End Class
 Class Program
     Sub Main(string() args)
-    
+
        Dim cx = new D()
        Dim cx2 as C = $$
     End Sub
@@ -2295,20 +2419,20 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselectionParamsArray() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 
 Class Program
 
     Sub Main(string() args)
-    
+
        Dim azc as integer
        M2(a$$
     End Sub
-    Sub M2(params int() yx)  
+    Sub M2(params int() yx)
     End Sub
 End Class
- 
+
 ]]></Document>)
                 state.SendInvokeCompletionList()
                 Await state.WaitForAsynchronousOperationsAsync().ConfigureAwait(True)
@@ -2318,7 +2442,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TargetTypePreselectionSetterValue() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 Class Program
     Private Async As Integer
@@ -2340,7 +2464,7 @@ End Class]]></Document>)
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         <WorkItem(12530, "https://github.com/dotnet/roslyn/issues/12530")>
         Public Async Function TestAnonymousTypeDescription() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 Imports System.Linq
 
@@ -2363,7 +2487,7 @@ $"<{ VBFeaturesResources.Extension }> Function IEnumerable(Of 'a).ToArray() As '
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         <WorkItem(12530, "https://github.com/dotnet/roslyn/issues/12530")>
         Public Async Function TestAnonymousTypeDescription2() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                            <Document><![CDATA[
 Imports System.Linq
 
@@ -2386,14 +2510,14 @@ $"<{ VBFeaturesResources.Extension }> Function IEnumerable(Of 'a).ToArray() As '
         <WorkItem(11812, "https://github.com/dotnet/roslyn/issues/11812")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestObjectCreationQualifiedName() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
  Class A
      Sub Test()
          Dim b As B.C(Of Integer) = New$$
      End Sub
  End Class
- 
+
  Namespace B
      Class C(Of T)
      End Class
@@ -2406,9 +2530,9 @@ $"<{ VBFeaturesResources.Extension }> Function IEnumerable(Of 'a).ToArray() As '
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439")>
+        <WpfFact>
         Public Async Function TestNonTrailingNamedArgumentInVB15_3() As Task
-            Using state = TestState.CreateTestStateFromWorkspace(
+            Using state = OldCompletionTestState.CreateTestStateFromWorkspace(
                  <Workspace>
                      <Project Language="Visual Basic" LanguageVersion="VisualBasic15_3" CommonReferences="true" AssemblyName="VBProj">
                          <Document FilePath="C.vb">
@@ -2433,7 +2557,7 @@ End Class
 
         <WpfFact>
         Public Async Function TestNonTrailingNamedArgumentInVB15_5() As Task
-            Using state = TestState.CreateTestStateFromWorkspace(
+            Using state = OldCompletionTestState.CreateTestStateFromWorkspace(
                  <Workspace>
                      <Project Language="Visual Basic" LanguageVersion="VisualBasic15_5" CommonReferences="true" AssemblyName="VBProj">
                          <Document FilePath="C.vb">
@@ -2460,9 +2584,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSymbolInTupleLiteral() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2478,9 +2602,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSymbolInTupleLiteralAfterComma() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2496,12 +2620,12 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSnippetInTupleLiteral() As Task
             Dim snippetProvider As CompletionProvider =
                 New VisualStudio.LanguageServices.VisualBasic.Snippets.SnippetCompletionProvider(Nothing)
 
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2523,13 +2647,13 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSnippetInTupleLiteralAfterComma() As Task
             Dim snippetProvider As CompletionProvider =
                 New VisualStudio.LanguageServices.VisualBasic.Snippets.
                     SnippetCompletionProvider(editorAdaptersFactoryService:=Nothing)
 
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2557,7 +2681,7 @@ End Class
                 New VisualStudio.LanguageServices.VisualBasic.Snippets.
                     SnippetCompletionProvider(editorAdaptersFactoryService:=Nothing)
 
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2579,9 +2703,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestBuiltInTypesKeywordInTupleLiteral() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2597,9 +2721,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestBuiltInTypesKeywordInTupleLiteralAfterComma() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2615,9 +2739,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestFunctionKeywordInTupleLiteral() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2633,9 +2757,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestFunctionKeywordInTupleLiteralAfterComma() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2652,7 +2776,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSymbolInTupleType() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo()
@@ -2669,7 +2793,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestInvocationExpression() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo(Alice As Integer)
@@ -2687,7 +2811,7 @@ End Class
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestInvocationExpressionAfterComma() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                   <Document><![CDATA[
 Class C
     Public Sub Goo(Alice As Integer, Bob As Integer)
@@ -2706,7 +2830,7 @@ End Class
         <WorkItem(13161, "https://github.com/dotnet/roslyn/issues/13161")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitGenericDoesNotInsertEllipsis() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
 Interface Goo(Of T)
 End Interface
@@ -2725,9 +2849,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(13161, "https://github.com/dotnet/roslyn/issues/13161")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27439"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitGenericDoesNotInsertEllipsisCommitOnParen() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
 Interface Goo(Of T)
 End Interface
@@ -2747,7 +2871,7 @@ End Class]]></Document>)
         <WorkItem(13161, "https://github.com/dotnet/roslyn/issues/13161")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function CommitGenericItemDoesNotInsertEllipsisCommitOnTab() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
 Interface Goo(Of T)
 End Interface
@@ -2766,9 +2890,9 @@ End Class]]></Document>)
         End Function
 
         <WorkItem(15011, "https://github.com/dotnet/roslyn/issues/15011")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27656"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function SymbolAndObjectPreselectionUnification() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
 Module Module1
 
@@ -2789,7 +2913,7 @@ End Module
         <WorkItem(394863, "https://devdiv.visualstudio.com/DevDiv/_workitems?_a=edit&id=394863&triage=true")>
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function ImplementsClause() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
 Partial Class TestClass
     Implements IComparable(Of TestClass)
@@ -2810,9 +2934,9 @@ End Class
         End Function
 
         <WorkItem(18785, "https://github.com/dotnet/roslyn/issues/18785")>
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27441"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function BackspaceSoftSelectionIfNotPrefixMatch() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                             <Document><![CDATA[
 Class C
     Sub Do()

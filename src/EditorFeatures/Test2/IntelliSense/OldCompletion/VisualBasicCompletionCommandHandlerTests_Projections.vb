@@ -4,13 +4,17 @@ Imports System.Threading.Tasks
 Imports Microsoft.CodeAnalysis.Editor.UnitTests.Extensions
 Imports Microsoft.VisualStudio.Text.Projection
 
-Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
+Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense.OldCompletion
+    ''' <summary>
+    ''' This is a test file corresponding to the old Completion service which we are going to turn off after migration to the new one.
+    ''' We should keep this file up-to-date and on par with the new file until then.
+    ''' </summary>
     <[UseExportProvider]>
     Public Class VisualBasicCompletionCommandHandlerTests_Projections
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestSimpleWithJustSubjectBuffer() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 Option Strict Off
 Option Explicit On
@@ -43,9 +47,9 @@ End Namespace
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27446"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestAfterDot() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 {|S2:
 Class C
@@ -80,9 +84,9 @@ End Class
             End Using
         End Function
 
-        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/27446"), Trait(Traits.Feature, Traits.Features.Completion)>
+        <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestInObjectCreationExpression() As Task
-            Using state = TestState.CreateVisualBasicTestState(
+            Using state = OldCompletionTestState.CreateVisualBasicTestState(
                 <Document><![CDATA[
 {|S2:
 Class C
