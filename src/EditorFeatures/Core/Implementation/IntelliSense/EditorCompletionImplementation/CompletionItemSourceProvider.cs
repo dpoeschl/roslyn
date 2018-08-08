@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
     [ContentType(ContentTypeNames.RoslynContentType)]
     internal class CompletionItemSourceProvider : IAsyncCompletionSourceProvider
     {
-        IAsyncCompletionSource _instance;
+        private IAsyncCompletionSource _instance;
 
         [ImportingConstructor]
         [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]

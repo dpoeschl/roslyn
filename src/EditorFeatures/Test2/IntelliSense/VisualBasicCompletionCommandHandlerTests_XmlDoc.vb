@@ -354,7 +354,7 @@ End Class
 
                 state.SendInvokeCompletionList()
                 Await state.AssertCompletionSession()
-                ' state.SendSelectCompletionItem("!--")
+                state.SendSelectCompletionItem("!--")
                 state.SendReturn()
                 Await state.AssertNoCompletionSession()
 
@@ -377,7 +377,7 @@ End Class
 
                 state.SendTypeChars("<")
                 Await state.AssertCompletionSession()
-                ' state.SendSelectCompletionItem("!--")
+                state.SendSelectCompletionItem("!--")
                 state.SendTypeChars(">")
                 Await state.AssertNoCompletionSession()
 
@@ -400,7 +400,7 @@ End Class
 
                 state.SendInvokeCompletionList()
                 Await state.AssertCompletionSession()
-                ' state.SendSelectCompletionItem("![CDATA[")
+                state.SendSelectCompletionItem("![CDATA[")
                 state.SendReturn()
                 Await state.AssertNoCompletionSession()
 
@@ -423,7 +423,7 @@ End Class
 
                 state.SendTypeChars("<")
                 Await state.AssertCompletionSession()
-                ' state.SendSelectCompletionItem("![CDATA[")
+                state.SendSelectCompletionItem("![CDATA[")
                 state.SendTypeChars(">")
                 Await state.AssertNoCompletionSession()
 

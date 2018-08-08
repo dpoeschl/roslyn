@@ -59,8 +59,6 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                         Optional workspaceKind As String = Nothing)
             MyBase.New(workspaceElement, CombineExcludedTypes(excludedTypes, includeFormatCommandHandler), ExportProviderCache.CreateTypeCatalog(CombineExtraTypes(If(extraExportedTypes, New List(Of Type)))), workspaceKind:=workspaceKind)
 
-            ' Dim broker = GetExportedValue(Of IAsyncCompletionBroker)()
-
             Dim languageServices = Me.Workspace.CurrentSolution.Projects.First().LanguageServices
             Dim language = languageServices.Language
 
@@ -268,14 +266,25 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
 
         End Function
 
-        Public Async Function AssertCompletionSession(Optional numberOfItems As Integer = 0) As Task
-            Await WaitForAsynchronousOperationsAsync()
-            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+        Public Async Function AssertCompletionSession() As Task
+            Dim session = Await GetSession()
             Assert.NotNull(session)
+        End Function
 
-            If numberOfItems <> 0 Then
-                Assert.Equal(numberOfItems, session.GetComputedItems(CancellationToken.None).Items.Count())
-            End If
+        'TODO https://github.com/dotnet/roslyn/issues/27654. Need an interface in the Editor
+        Public Sub SendSelectCompletionItem(s As String)
+            Throw New NotImplementedException()
+        End Sub
+
+        Private Async Function GetSession() As Task(Of IAsyncCompletionSession)
+            Await WaitForAsynchronousOperationsAsync()
+            Return GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+        End Function
+
+        Public Async Function AssertComputedItemsCount(numberOfItems As Integer) As Task
+            Dim session = Await GetSession()
+            Assert.NotNull(session)
+            Assert.Equal(numberOfItems, session.GetComputedItems(CancellationToken.None).Items.Count())
         End Function
 
         Public Async Function AssertLineTextAroundCaret(expectedTextBeforeCaret As String, expectedTextAfterCaret As String) As Task
@@ -310,7 +319,6 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             AssertNoAsynchronousOperationsRunning()
             Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
             Assert.NotNull(session)
-            ' Assert.True(False) ' TODO!!!
             Dim items = session.GetComputedItems(CancellationToken.None).Items
             Assert.Equal(expectedOrder.Count, items.Count)
             For i = 0 To expectedOrder.Count - 1

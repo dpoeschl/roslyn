@@ -289,7 +289,7 @@ Class Program
 End Class
                               </document>)
                 state.SendTypeChars(".A")
-                Await state.AssertCompletionSession(numberOfItems:=3)
+                Await state.AssertComputedItemsCount(numberOfItems:=3)
             End Using
         End Function
 
@@ -315,10 +315,10 @@ End Class
                               </document>)
                 state.SendTypeChars(".A")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertCompletionSession(numberOfItems:=4)
+                Await state.AssertComputedItemsCount(numberOfItems:=4)
                 state.SendTypeChars("A")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertCompletionSession(numberOfItems:=2)
+                Await state.AssertComputedItemsCount(numberOfItems:=2)
             End Using
         End Function
 
@@ -342,76 +342,76 @@ End Class
             End Using
         End Function
 
-        '<WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        'Public Async Function TestBackspaceBeforeCompletedComputation() As Task
-        '    ' Simulate a very slow completion provider.
-        '    Dim e = New ManualResetEvent(False)
-        '    Dim provider = CreateTriggeredCompletionProvider(e)
+        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/29110"), Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestBackspaceBeforeCompletedComputation() As Task
+            ' Simulate a very slow completion provider.
+            Dim e = New ManualResetEvent(False)
+            Dim provider = CreateTriggeredCompletionProvider(e)
 
-        '    Using state = TestState.CreateVisualBasicTestState(
-        '                      <document>
-        '                        Class Program
-        '                            Shared Sub Main(args As String())
-        '                                Program$$
-        '                            End Sub
-        '                        End Class
-        '                      </document>, extraCompletionProviders:={provider})
+            Using state = TestState.CreateVisualBasicTestState(
+                              <document>
+                                Class Program
+                                    Shared Sub Main(args As String())
+                                        Program$$
+                                    End Sub
+                                End Class
+                              </document>, extraCompletionProviders:={provider})
 
-        '        Await state.AssertNoCompletionSession()
-        '        state.SendTypeChars(".M")
+                Await state.AssertNoCompletionSession()
+                state.SendTypeChars(".M")
 
-        '        ' We should not have a session now.  Note: do not block as this will just hang things
-        '        ' since the provider will not return.
-        '        Await state.AssertNoCompletionSession(block:=False)
+                ' We should not have a session now.  Note: do not block as this will just hang things
+                ' since the provider will not return.
+                Await state.AssertNoCompletionSession(block:=False)
 
-        '        ' Now, navigate back.
-        '        state.SendBackspace()
+                ' Now, navigate back.
+                state.SendBackspace()
 
-        '        ' allow the provider to continue
-        '        e.Set()
+                ' allow the provider to continue
+                e.Set()
 
-        '        ' At this point, completion will be available since the caret is still within the model's span.
-        '        Await state.AssertCompletionSession()
+                ' At this point, completion will be available since the caret is still within the model's span.
+                Await state.AssertCompletionSession()
 
-        '        ' Now, navigate back again.  Completion should be dismissed
-        '        state.SendBackspace()
-        '        Await state.AssertNoCompletionSession()
-        '    End Using
-        'End Function
+                ' Now, navigate back again.  Completion should be dismissed
+                state.SendBackspace()
+                Await state.AssertNoCompletionSession()
+            End Using
+        End Function
 
-        '<WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
-        'Public Async Function TestNavigationBeforeCompletedComputation() As Task
-        '    ' Simulate a very slow completion provider.
-        '    Dim e = New ManualResetEvent(False)
-        '    Dim provider = CreateTriggeredCompletionProvider(e)
+        <WpfFact(Skip:="https://github.com/dotnet/roslyn/issues/29110"), Trait(Traits.Feature, Traits.Features.Completion)>
+        Public Async Function TestNavigationBeforeCompletedComputation() As Task
+            ' Simulate a very slow completion provider.
+            Dim e = New ManualResetEvent(False)
+            Dim provider = CreateTriggeredCompletionProvider(e)
 
-        '    Using state = TestState.CreateVisualBasicTestState(
-        '                      <document>
-        '                        Class Program
-        '                            Shared Sub Main(args As String())
-        '                                Program$$
-        '                            End Sub
-        '                        End Class
-        '                      </document>, extraCompletionProviders:={provider})
+            Using state = TestState.CreateVisualBasicTestState(
+                              <document>
+                                Class Program
+                                    Shared Sub Main(args As String())
+                                        Program$$
+                                    End Sub
+                                End Class
+                              </document>, extraCompletionProviders:={provider})
 
-        '        Await state.AssertNoCompletionSession()
-        '        state.SendTypeChars(".Ma")
+                Await state.AssertNoCompletionSession()
+                state.SendTypeChars(".Ma")
 
-        '        ' We should not have a session now.  Note: do not block as this will just hang things
-        '        ' since the provider will not return.
-        '        Await state.AssertNoCompletionSession(block:=False)
+                ' We should not have a session now.  Note: do not block as this will just hang things
+                ' since the provider will not return.
+                Await state.AssertNoCompletionSession(block:=False)
 
-        '        ' Now, navigate using the caret.
-        '        state.SendMoveToPreviousCharacter()
+                ' Now, navigate using the caret.
+                state.SendMoveToPreviousCharacter()
 
-        '        ' allow the provider to continue
-        '        e.Set()
+                ' allow the provider to continue
+                e.Set()
 
-        '        ' We should not have a session since we tear things down if we see a caret move
-        '        ' before the providers have returned.
-        '        Await state.AssertNoCompletionSession()
-        '    End Using
-        'End Function
+                ' We should not have a session since we tear things down if we see a caret move
+                ' before the providers have returned.
+                Await state.AssertNoCompletionSession()
+            End Using
+        End Function
 
         <WpfFact, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestNavigateOutOfItemChangeSpan() As Task
@@ -924,7 +924,7 @@ End Class
                               </Document>)
 
                 state.SendTypeChars(" ")
-                Await state.AssertCompletionSession(numberOfItems:=1)
+                Await state.AssertComputedItemsCount(numberOfItems:=1)
                 Assert.True(state.CompletionItemsContainsAll({"str:="}))
             End Using
         End Function
@@ -952,7 +952,7 @@ End Class
                               </Document>)
 
                 state.SendTypeChars(" ")
-                Await state.AssertCompletionSession(numberOfItems:=3)
+                Await state.AssertComputedItemsCount(numberOfItems:=3)
                 Assert.True(state.CompletionItemsContainsAll({"b:=", "num:=", "str:=", "dbl:="}))
             End Using
         End Function
@@ -1556,7 +1556,7 @@ End Class
             ]]></Document>)
                 state.SendTypeChars("selec")
                 Await state.WaitForAsynchronousOperationsAsync()
-                Await state.AssertCompletionSession(numberOfItems:=2)
+                Await state.AssertComputedItemsCount(numberOfItems:=2)
             End Using
         End Function
 

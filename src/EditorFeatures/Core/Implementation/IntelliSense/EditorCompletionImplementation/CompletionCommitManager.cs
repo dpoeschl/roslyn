@@ -19,6 +19,9 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
 {
     internal sealed class CompletionCommitManager : IAsyncCompletionCommitManager
     {
+        // We use an array instead of ImmutableArray here becuase we need to provide these characters to 
+        // IEnumerable<char> IAsyncCompletionCommitManager.PotentialCommitCharacters.
+        // Using ImmutableArray would lead to a regular boxing which is an unnecessary preformance issue.
         private static readonly char[] s_commitChars = new char[] {
             ' ', '{', '}', '[', ']', '(', ')', '.', ',', ':',
             ';', '+', '-', '*', '/', '%', '&', '|', '^', '!',

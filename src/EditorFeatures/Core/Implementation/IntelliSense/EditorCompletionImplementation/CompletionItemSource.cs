@@ -199,18 +199,6 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
             return new ClassifiedTextElement(description.TaggedParts.Select(p => new ClassifiedTextRun(p.Tag.ToClassificationTypeName(), p.Text)));
         }
 
-        private CompletionServiceWithProviders GetCompletionService(ITextSnapshot snapshot)
-        {
-            var document = snapshot.GetOpenDocumentInCurrentContextWithChanges();
-            if (document == null)
-            {
-                return null;
-            }
-
-            var workspace = document.Project.Solution.Workspace;
-            return (CompletionServiceWithProviders)document.GetLanguageService<CompletionService>();
-        }
-
         public Task HandleViewClosedAsync(ITextView view) => Task.CompletedTask;
 
         public bool TryGetApplicableToSpan(char typeChar, SnapshotPoint triggerLocation, out SnapshotSpan applicableSpan, CancellationToken cancellationToken)
@@ -229,12 +217,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
                 return false;
             }
 
-            // TODO: Use GetTextSynchronously https://github.com/dotnet/roslyn/issues/27425
-            if (!document.TryGetText(out var sourceText))
-            {
-                applicableSpan = default;
-                return false;
-            }
+            var sourceText = document.GetTextSynchronously(cancellationToken);
 
             // TODO: TypeChar of 0 means Invoke or InvokeAndCommitIfUnique. An API update will make this better. https://github.com/dotnet/roslyn/issues/27426
             if (typeChar != 0 && !service.ShouldTriggerCompletion(sourceText, triggerLocation.Position, RoslynTrigger.CreateInsertionTrigger(typeChar)))

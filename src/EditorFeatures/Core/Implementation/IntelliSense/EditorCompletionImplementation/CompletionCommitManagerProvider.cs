@@ -14,7 +14,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
     [ContentType(ContentTypeNames.RoslynContentType)]
     internal class CompletionCommitManagerProvider : IAsyncCompletionCommitManagerProvider
     {
-        IAsyncCompletionCommitManager _instance;
+        private IAsyncCompletionCommitManager _instance;
 
         [ImportingConstructor]
         [Obsolete(MefConstruction.ImportingConstructorMessage, error: true)]

@@ -354,7 +354,7 @@ class c
 
                 state.SendInvokeCompletionList()
                 Await state.AssertCompletionSession()
-                ' state.SendSelectCompletionItem("!--")
+                state.SendSelectCompletionItem("!--")
                 state.SendReturn()
                 Await state.AssertNoCompletionSession()
 
@@ -377,7 +377,7 @@ class c
 
                 state.SendTypeChars("<")
                 Await state.AssertCompletionSession()
-                ' state.SendSelectCompletionItem("!--")
+                state.SendSelectCompletionItem("!--")
                 state.SendTypeChars(">")
                 Await state.AssertNoCompletionSession()
 

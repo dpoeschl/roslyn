@@ -33,9 +33,11 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
         private readonly IEnumerable<Lazy<IBraceCompletionSessionProvider, BraceCompletionMetadata>> _autoBraceCompletionChars;
         private readonly Dictionary<IContentType, ImmutableHashSet<char>> _autoBraceCompletionCharSet;
 
-        // The completion API is not checked by default - null
-        // false - disabled 
-        // true - enabled
+        /// <summary>
+        /// The completion API is not checked by default - null
+        /// false - disabled
+        /// true - enabled
+        /// </summary>
         private bool? _completionAPIEnabled = null;
 
         [ImportingConstructor]
@@ -63,7 +65,6 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion
         public bool TryGetController(ITextView textView, ITextBuffer subjectBuffer, out Controller controller)
         {
             AssertIsForeground();
-
 
             if (!IsModernCompletionEnabled(textView, subjectBuffer))
             {
