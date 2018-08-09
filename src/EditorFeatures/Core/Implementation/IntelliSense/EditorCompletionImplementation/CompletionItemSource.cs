@@ -29,7 +29,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
         internal const string TriggerBuffer = nameof(TriggerBuffer);
         internal const string MatchPriority = nameof(MatchPriority);
         internal const string SelectionBehavior = nameof(SelectionBehavior);
-        internal const string InsertionText = "InsertionText";
+        internal const string InsertionText = nameof(InsertionText);
 
         public async Task<EditorCompletion.CompletionContext> GetCompletionContextAsync(
             EditorCompletion.InitialTrigger trigger,
