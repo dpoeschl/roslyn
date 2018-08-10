@@ -5,7 +5,7 @@ Imports Microsoft.CodeAnalysis.Completion
 Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
     Friend Class TestStateFactory
         Public Shared Function CreateCSharpTestState(completionImplementation As CompletionImplementation,
-                                                      documentElement As XElement,
+                                                     documentElement As XElement,
                                                      Optional extraCompletionProviders As CompletionProvider() = Nothing,
                                                      Optional excludedTypes As List(Of Type) = Nothing,
                                                      Optional extraExportedTypes As List(Of Type) = Nothing,

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -90,11 +91,10 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
                 case EditorCompletion.InitialTriggerReason.Deletion:
                     return RoslynTrigger.CreateDeletionTrigger(trigger.Character);
                 case EditorCompletion.InitialTriggerReason.Snippets:
-                    // TODO: Exclusive snippet mode isn't currently supported https://github.com/dotnet/roslyn/issues/27423
-                    return default;
-                default:
-                    return default;
+                     return new RoslynTrigger(CompletionTriggerKind.Snippets);
             }
+
+            throw new ArgumentException(trigger.Reason.ToString());
         }
 
         private EditorCompletion.CompletionItem Convert(
@@ -119,13 +119,13 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
                 attributeImages = ImmutableArray.Create(
                     new ImageElement(
                         warningImage,
-                        "Temporary Automation Name")); // TODO: Get automation names, here and below https://github.com/dotnet/roslyn/issues/27430
+                        EditorFeaturesResources.Warning));
             }
 
             var item = new EditorCompletion.CompletionItem(
                 roslynItem.DisplayText,
                 this,
-                new ImageElement(new ImageId(imageId.Guid, imageId.Id), "Temporary Automation Name"),
+                new ImageElement(new ImageId(imageId.Guid, imageId.Id), roslynItem.DisplayText),
                 filters,
                 suffix: string.Empty,
                 insertionText,
@@ -156,7 +156,7 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
                         var itemFilter = new EditorCompletion.CompletionFilter(
                             filter.DisplayText,
                             filter.AccessKey.ToString(),
-                            new ImageElement(new ImageId(imageId.Guid, imageId.Id), "Temporary Automation Name"));
+                            new ImageElement(new ImageId(imageId.Guid, imageId.Id), EditorFeaturesResources.Filter));
                         filterCache[filter.DisplayText] = itemFilter;
                         listBuilder.Add(itemFilter);
                     }
@@ -168,29 +168,27 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
 
         public async Task<object> GetDescriptionAsync(EditorCompletion.CompletionItem item, CancellationToken cancellationToken)
         {
-            // TODO: Should string.Empty returns here be null to avoid an empty popup? https://github.com/dotnet/roslyn/issues/27420
-
             if (!item.Properties.TryGetProperty<RoslynCompletionItem>(RoslynItem, out var roslynItem) ||
                 !item.Properties.TryGetProperty<ITextBuffer>(TriggerBuffer, out var triggerBuffer))
             {
-                return string.Empty;
+                return null;
             }
 
             if (!Workspace.TryGetWorkspace(triggerBuffer.AsTextContainer(), out var workspace))
             {
-                return string.Empty;
+                return null;
             }
 
             var documentId = workspace.GetDocumentIdInCurrentContext(triggerBuffer.AsTextContainer());
             if (documentId == null)
             {
-                return string.Empty;
+                return null;
             }
 
             var document = workspace.CurrentSolution.GetDocument(documentId);
             if (document == null)
             {
-                return string.Empty;
+                return null;
             }
 
             var service = (CompletionServiceWithProviders)document.GetLanguageService<CompletionService>();
@@ -219,18 +217,32 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.IntelliSense.Completion.E
 
             var sourceText = document.GetTextSynchronously(cancellationToken);
 
-            // TODO: TypeChar of 0 means Invoke or InvokeAndCommitIfUnique. An API update will make this better. https://github.com/dotnet/roslyn/issues/27426
-            if (typeChar != 0 && !service.ShouldTriggerCompletion(sourceText, triggerLocation.Position, RoslynTrigger.CreateInsertionTrigger(typeChar)))
+            if (!ShouldTriggerCompletion(typeChar, triggerLocation, sourceText, service))
             {
                 applicableSpan = default;
                 return false;
             }
 
-            // TODO: Check CompletionOptions.TriggerOnTyping  https://github.com/dotnet/roslyn/issues/27427
-            // TODO: Check CompletionOptions.TriggerOnDeletion
-
             applicableSpan = new SnapshotSpan(triggerLocation.Snapshot, service.GetDefaultCompletionListSpan(sourceText, triggerLocation.Position).ToSpan());
             return true;
+        }
+
+        // TODO: TypeChar of 0 means Invoke or InvokeAndCommitIfUnique. An API update will make this better. https://github.com/dotnet/roslyn/issues/27426
+        private static bool ShouldTriggerCompletion(char typeChar, SnapshotPoint triggerLocation, SourceText sourceText, CompletionServiceWithProviders service)
+        {
+            // TODO: Check CompletionOptions.TriggerOnTyping  https://github.com/dotnet/roslyn/issues/27427
+            // Both Backspace and Delete.
+            if (typeChar == '\b')
+            {
+                return triggerLocation.Position >= 0 &&
+                    triggerLocation.Position < triggerLocation.Snapshot.Length &&
+                    service.ShouldTriggerCompletion(sourceText, triggerLocation.Position, RoslynTrigger.CreateDeletionTrigger(triggerLocation.GetChar()));
+            }
+
+            return typeChar == 0 || service.ShouldTriggerCompletion(
+                sourceText,
+                triggerLocation.Position,
+                RoslynTrigger.CreateInsertionTrigger(typeChar));
         }
     }
 }

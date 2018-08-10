@@ -34,6 +34,8 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         Inherits AbstractCommandHandlerTestState
         Implements ITestState
 
+        Friend Const RoslynItem = "RoslynItem"
+
         Friend ReadOnly AsyncCompletionService As IAsyncCompletionService
         Friend ReadOnly SignatureHelpCommandHandler As SignatureHelpCommandHandler
         Friend ReadOnly FormatCommandHandler As FormatCommandHandler
@@ -45,12 +47,6 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         Friend ReadOnly Property CurrentSignatureHelpPresenterSession As TestSignatureHelpPresenterSession
             Get
                 Return SessionTestState.CurrentSignatureHelpPresenterSession
-            End Get
-        End Property
-
-        Friend ReadOnly Property CurrentCompletionPresenterSession As TestCompletionPresenterSession
-            Get
-                Return SessionTestState.CurrentCompletionPresenterSession
             End Get
         End Property
 
@@ -189,11 +185,13 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
 #Region "IntelliSense Operations"
 
         Public Overloads Sub SendEscape() Implements ITestState.SendEscape
-            MyBase.SendEscape(Sub(a, n, c) IntelliSenseCommandHandler.ExecuteCommand(a, n, c), Sub() Return)
+            Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of EscapeKeyCommandArgs))
+            MyBase.SendEscape(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
 
         Public Overloads Sub SendDownKey() Implements ITestState.SendDownKey
-            MyBase.SendDownKey(Sub(a, n, c) IntelliSenseCommandHandler.ExecuteCommand(a, n, c), Sub() Return)
+            Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of DownKeyCommandArgs))
+            MyBase.SendDownKey(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
 
         Public Overloads Sub SendUpKey() Implements ITestState.SendUpKey
@@ -204,12 +202,12 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
 
 #Region "Completion Operations"
         Public Overloads Sub SendTab() Implements ITestState.SendTab
-            Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of TabKeyCommandArgs))
+            Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.IChainedCommandHandler(Of TabKeyCommandArgs))
             MyBase.SendTab(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() EditorOperations.InsertText(vbTab))
         End Sub
 
         Public Overloads Sub SendReturn() Implements ITestState.SendReturn
-            Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of ReturnKeyCommandArgs))
+            Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.IChainedCommandHandler(Of ReturnKeyCommandArgs))
             MyBase.SendReturn(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() EditorOperations.InsertNewLine())
         End Sub
 
@@ -241,25 +239,21 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         End Sub
 
         Public Overloads Sub SendInsertSnippetCommand() Implements ITestState.SendInsertSnippetCommand
-            ' Won't work
             Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of InsertSnippetCommandArgs))
             MyBase.SendInsertSnippetCommand(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
 
         Public Overloads Sub SendSurroundWithCommand() Implements ITestState.SendSurroundWithCommand
-            ' Won't work
             Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of SurroundWithCommandArgs))
             MyBase.SendSurroundWithCommand(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
 
         Public Overloads Sub SendSave() Implements ITestState.SendSave
-            ' Won't work
             Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of SaveCommandArgs))
             MyBase.SendSave(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
 
         Public Overloads Sub SendSelectAll() Implements ITestState.SendSelectAll
-            ' Won't work
             Dim handler = DirectCast(EditorCompletionCommandHandler, VSCommanding.ICommandHandler(Of SelectAllCommandArgs))
             MyBase.SendSelectAll(Sub(a, n, c) handler.ExecuteCommand(a, n, c), Sub() Return)
         End Sub
@@ -287,9 +281,13 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
 
         End Function
 
-        Public Async Function AssertCompletionSession() As Task Implements ITestState.AssertCompletionSession
+        Public Async Function AssertCompletionSession(Optional view As ITextView = Nothing) As Task Implements ITestState.AssertCompletionSession
+            If view Is Nothing Then
+                view = TextView
+            End If
+
             Await WaitForAsynchronousOperationsAsync()
-            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(view)
             Assert.NotNull(session)
         End Function
 
@@ -321,6 +319,27 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                                        Function(i) i.DisplayText = v))
         End Function
 
+        Public Function GetCompletionItems(Optional displayText As String = Nothing) As CompletionItem()
+            AssertNoAsynchronousOperationsRunning()
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Assert.NotNull(session)
+            Dim items = session.GetComputedItems(CancellationToken.None)
+
+            Dim filteredItems = items.Items.Where(Function(i) (displayText Is Nothing) Or (i.DisplayText = displayText)).ToArray()
+            Dim result(filteredItems.Length - 1) As CompletionItem
+
+            For i = 0 To filteredItems.Length - 1
+                Dim completionItem As CompletionItem = Nothing
+                If filteredItems(i).Properties.TryGetProperty(RoslynItem, completionItem) Then
+                    result(i) = completionItem
+                Else
+                    Assert.False(True, "No Roslyn Item found")
+                End If
+            Next
+
+            Return result
+        End Function
+
         Public Sub AssertItemsInOrder(expectedOrder As String()) Implements ITestState.AssertItemsInOrder
             AssertNoAsynchronousOperationsRunning()
             Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
@@ -337,10 +356,15 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                                                     Optional description As String = Nothing,
                                                     Optional isSoftSelected As Boolean? = Nothing,
                                                     Optional isHardSelected As Boolean? = Nothing,
-                                                    Optional shouldFormatOnCommit As Boolean? = Nothing) As Task Implements ITestState.AssertSelectedCompletionItem
+                                                    Optional shouldFormatOnCommit As Boolean? = Nothing,
+                                                    Optional view As ITextView = Nothing) As Task Implements ITestState.AssertSelectedCompletionItem
+            If view Is Nothing Then
+                view = TextView
+            End If
+
             Await WaitForAsynchronousOperationsAsync()
 
-            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(view)
             Assert.NotNull(session)
             Dim items = session.GetComputedItems(CancellationToken.None)
 
@@ -354,6 +378,7 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             'End If
 
             If displayText IsNot Nothing Then
+                Assert.NotNull(items.SelectedItem)
                 Assert.Equal(displayText, items.SelectedItem.DisplayText)
             End If
 
@@ -471,12 +496,6 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                                        Function(i) GetDisplayText(i, CurrentSignatureHelpPresenterSession.SelectedParameter.Value) = v))
         End Function
 
-        Public Function SignatureHelpItemsContainsAny(displayText As String()) As Boolean Implements ITestState.SignatureHelpItemsContainsAny
-            AssertNoAsynchronousOperationsRunning()
-            Return displayText.Any(Function(v) CurrentSignatureHelpPresenterSession.SignatureHelpItems.Any(
-                                       Function(i) GetDisplayText(i, CurrentSignatureHelpPresenterSession.SelectedParameter.Value) = v))
-        End Function
-
         Public Async Function AssertSelectedSignatureHelpItem(Optional displayText As String = Nothing,
                                Optional documentation As String = Nothing,
                                Optional selectedParameter As String = Nothing) As Task Implements ITestState.AssertSelectedSignatureHelpItem
@@ -497,9 +516,10 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             End If
         End Function
 
-        Public Function GetCompletionCommandHandler() As CompletionCommandHandler Implements ITestState.GetCompletionCommandHandler
-            Throw New NotImplementedException()
-        End Function
+        Public Sub SendDeleteToSpecificViewAndBuffer(view As IWpfTextView, buffer As ITextBuffer) Implements ITestState.SendDeleteToSpecificViewAndBuffer
+            Dim compHandler = DirectCast(EditorCompletionCommandHandler, VSCommanding.IChainedCommandHandler(Of DeleteKeyCommandArgs))
+            compHandler.ExecuteCommand(New DeleteKeyCommandArgs(view, buffer), AddressOf MyBase.SendDelete, TestCommandExecutionContext.Create())
+        End Sub
 
         Public Shadows Function GetExportedValue(Of T)() As T Implements ITestState.GetExportedValue
             Return MyBase.GetExportedValue(Of T)
@@ -525,7 +545,17 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         End Function
 
         Public Function GetSelectedItemOpt() As CompletionItem Implements ITestState.GetSelectedItemOpt
-            Throw New NotImplementedException()
+            AssertNoAsynchronousOperationsRunning()
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            If session IsNot Nothing Then
+                Dim item = session.GetComputedItems(CancellationToken.None).SelectedItem
+                Dim completionItem As CompletionItem = Nothing
+                If item?.Properties.TryGetProperty(RoslynItem, completionItem) Then
+                    Return completionItem
+                End If
+            End If
+
+            Return Nothing
         End Function
 
         Public Function GetCompletionItems() As IList(Of CompletionItem) Implements ITestState.GetCompletionItems
@@ -551,12 +581,20 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Throw New NotImplementedException()
         End Function
 
-        Public Function GetSuggestionModeItem() As CompletionItem Implements ITestState.GetSuggestionModeItem
-            Throw New NotImplementedException()
+        Public Function HasSuggestedItem() As Boolean Implements ITestState.HasSuggestedItem
+            AssertNoAsynchronousOperationsRunning()
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Assert.NotNull(session)
+            Dim computedItems = session.GetComputedItems(CancellationToken.None)
+            Return computedItems.SuggestionItem IsNot Nothing
         End Function
 
         Public Function IsSoftSelected() As Boolean Implements ITestState.IsSoftSelected
-            Throw New NotImplementedException()
+            AssertNoAsynchronousOperationsRunning()
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Assert.NotNull(session)
+            Dim computedItems = session.GetComputedItems(CancellationToken.None)
+            Return computedItems.UsesSoftSelection
         End Function
 
         Public Function GetSignatureHelpItems() As IList(Of SignatureHelpItem) Implements ITestState.GetSignatureHelpItems

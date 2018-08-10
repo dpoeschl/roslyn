@@ -229,8 +229,8 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Return CurrentCompletionPresenterSession.CompletionItemFilters
         End Function
 
-        Public Function GetSuggestionModeItem() As CompletionItem Implements ITestState.GetSuggestionModeItem
-            Return CurrentCompletionPresenterSession.SuggestionModeItem
+        Public Function HasSuggestedItem() As Boolean Implements ITestState.HasSuggestedItem
+            Return CurrentCompletionPresenterSession.SuggestionModeItem IsNot Nothing
         End Function
 
         Public Function IsSoftSelected() As Boolean Implements ITestState.IsSoftSelected
@@ -257,9 +257,9 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Return MyBase.GetLineTextFromCaretPosition()
         End Function
 
-        Public Function GetCompletionCommandHandler() As CompletionCommandHandler Implements ITestState.GetCompletionCommandHandler
-            Return CompletionCommandHandler
-        End Function
+        Sub SendDeleteToSpecificViewAndBuffer(view As IWpfTextView, buffer As ITextBuffer) Implements ITestState.SendDeleteToSpecificViewAndBuffer
+            CompletionCommandHandler.ExecuteCommand(New DeleteKeyCommandArgs(view, buffer), AddressOf MyBase.SendDelete, TestCommandExecutionContext.Create())
+        End Sub
 
 #End Region
 
@@ -364,7 +364,7 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
             Assert.Null(Me.CurrentCompletionPresenterSession)
         End Function
 
-        Public Async Function AssertCompletionSession() As Task Implements ITestState.AssertCompletionSession
+        Public Async Function AssertCompletionSession(Optional view As ITextView = Nothing) As Task Implements ITestState.AssertCompletionSession
             Await WaitForAsynchronousOperationsAsync()
             Assert.NotNull(Me.CurrentCompletionPresenterSession)
         End Function
@@ -404,7 +404,8 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
                                Optional description As String = Nothing,
                                Optional isSoftSelected As Boolean? = Nothing,
                                Optional isHardSelected As Boolean? = Nothing,
-                               Optional shouldFormatOnCommit As Boolean? = Nothing) As Task Implements ITestState.AssertSelectedCompletionItem
+                               Optional shouldFormatOnCommit As Boolean? = Nothing,
+                               Optional view As ITextView = Nothing) As Task Implements ITestState.AssertSelectedCompletionItem
 
             Await WaitForAsynchronousOperationsAsync()
             If isSoftSelected.HasValue Then
@@ -530,12 +531,6 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         Public Function SignatureHelpItemsContainsAll(displayText As String()) As Boolean Implements ITestState.SignatureHelpItemsContainsAll
             AssertNoAsynchronousOperationsRunning()
             Return displayText.All(Function(v) CurrentSignatureHelpPresenterSession.SignatureHelpItems.Any(
-                                       Function(i) GetDisplayText(i, CurrentSignatureHelpPresenterSession.SelectedParameter.Value) = v))
-        End Function
-
-        Public Function SignatureHelpItemsContainsAny(displayText As String()) As Boolean Implements ITestState.SignatureHelpItemsContainsAny
-            AssertNoAsynchronousOperationsRunning()
-            Return displayText.Any(Function(v) CurrentSignatureHelpPresenterSession.SignatureHelpItems.Any(
                                        Function(i) GetDisplayText(i, CurrentSignatureHelpPresenterSession.SelectedParameter.Value) = v))
         End Function
 
