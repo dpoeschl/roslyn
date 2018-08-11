@@ -621,7 +621,7 @@ class C
         End Function
 
         <MemberData(NameOf(AllCompletionImplementations))>
-                                                <WpfTheory>
+        <WpfTheory>
         Public Async Function TestNonTrailingNamedArgumentInCSharp7_1(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateTestStateFromWorkspace(completionImplementation,
                  <Workspace>
@@ -1603,6 +1603,7 @@ class Goo
 
         <WorkItem(479078, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/479078")>
         <MemberData(NameOf(AllCompletionImplementations))>
+        <WpfTheory, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function EnumCompletionTriggeredOnSpaceForNullables(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateCSharpTestState(completionImplementation,
                               <Document>

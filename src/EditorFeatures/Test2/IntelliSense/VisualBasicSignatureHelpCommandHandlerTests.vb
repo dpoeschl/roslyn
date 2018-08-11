@@ -93,7 +93,7 @@ End Class
         End Function
 
         <WorkItem(539100, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/539100"), WorkItem(530081, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/530081")>
-                    <MemberData(NameOf(AllCompletionImplementations))><WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        <MemberData(NameOf(AllCompletionImplementations))><WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
         Public Async Function TestSigHelpShowsOnBackspace(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateVisualBasicTestState(completionImplementation,
                               <Document>
@@ -153,7 +153,7 @@ End Class
         End Function
 
         <WorkItem(1060850, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1060850")>
-                                <MemberData(NameOf(AllCompletionImplementations))><WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        <MemberData(NameOf(AllCompletionImplementations))> <WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
         Public Async Function TestSigHelpNotDismissedAfterQuote(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateVisualBasicTestState(completionImplementation,
                               <Document><![CDATA[
@@ -176,7 +176,7 @@ End Class
         End Function
 
         <WorkItem(1060850, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1060850")>
-                                        <MemberData(NameOf(AllCompletionImplementations))><WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        <MemberData(NameOf(AllCompletionImplementations))> <WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
         Public Async Function TestSigHelpDismissedAfterComment(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateVisualBasicTestState(completionImplementation,
                               <Document><![CDATA[
@@ -198,7 +198,7 @@ End Class
         End Function
 
         <WorkItem(1082128, "http://vstfdevdiv:8080/DevDiv2/DevDiv/_workitems/edit/1082128")>
-                                                <MemberData(NameOf(AllCompletionImplementations))><WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        <MemberData(NameOf(AllCompletionImplementations))> <WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
         Public Async Function TestSigHelpNotDismissedAfterSpace(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateVisualBasicTestState(completionImplementation,
                               <Document><![CDATA[
@@ -276,7 +276,7 @@ End Class
         End Function
 
         <WorkItem(5174, "https://github.com/dotnet/roslyn/issues/5174")>
-                                                                                <MemberData(NameOf(AllCompletionImplementations))><WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
+        <MemberData(NameOf(AllCompletionImplementations))> <WpfTheory, Trait(Traits.Feature, Traits.Features.SignatureHelp)>
         Public Async Function DontShowSignatureHelpIfOptionIsTurnedOffUnlessExplicitlyInvoked(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateVisualBasicTestState(completionImplementation,
                               <Document>

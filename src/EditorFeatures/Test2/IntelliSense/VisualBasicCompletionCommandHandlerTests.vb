@@ -2218,6 +2218,7 @@ End Class
             ]]></Document>)
                 state.SendInvokeCompletionList()
                 Await state.WaitForAsynchronousOperationsAsync()
+                ' Should only have one item called 'Double' and it should have a keyword glyph
                 Dim doubleItem = state.GetCompletionItems().Single(Function(c) c.DisplayText = "Double")
                 Assert.True(doubleItem.Tags.Contains(WellKnownTags.Keyword))
             End Using
