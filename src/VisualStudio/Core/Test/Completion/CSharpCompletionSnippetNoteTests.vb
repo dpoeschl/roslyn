@@ -41,7 +41,7 @@ class C
         End Function
 
         <InlineData(CompletionImplementation.Legacy)>
-        <InlineData(CompletionImplementation.Modern, Skip:="https://github.com/dotnet/roslyn/issues/27439")>
+        <InlineData(CompletionImplementation.Modern)>
         <WpfTheory, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function ColonDoesntTriggerSnippetInTupleLiteral(completionImplementation As CompletionImplementation) As Task
             Using state = CreateCSharpSnippetExpansionNoteTestState(completionImplementation, _markup, "interface")
@@ -54,7 +54,7 @@ class C
         End Function
 
         <InlineData(CompletionImplementation.Legacy)>
-        <InlineData(CompletionImplementation.Modern, Skip:="https://github.com/dotnet/roslyn/issues/27439")>
+        <InlineData(CompletionImplementation.Modern)>
         <WpfTheory, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function ColonDoesntTriggerSnippetInTupleLiteralAfterComma(completionImplementation As CompletionImplementation) As Task
             Using state = CreateCSharpSnippetExpansionNoteTestState(completionImplementation, _markup, "interface")
