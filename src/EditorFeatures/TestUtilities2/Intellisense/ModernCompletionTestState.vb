@@ -630,7 +630,10 @@ Namespace Microsoft.CodeAnalysis.Editor.UnitTests.IntelliSense
         End Sub
 
         Public Sub SendSelectCompletionItem(displayText As String) Implements ITestState.SendSelectCompletionItem
-            Throw New NotImplementedException()
+            AssertNoAsynchronousOperationsRunning()
+            Dim session = GetExportedValue(Of IAsyncCompletionBroker)().GetSession(TextView)
+            Dim operations = DirectCast(session, IAsyncCompletionSessionOperations)
+            operations.SelectCompletionItem(session.GetComputedItems(CancellationToken.None).Items.Single(Function(i) i.DisplayText = displayText))
         End Sub
 
         Public Sub SendSelectCompletionItemThroughPresenterSession(item As CompletionItem) Implements ITestState.SendSelectCompletionItemThroughPresenterSession
