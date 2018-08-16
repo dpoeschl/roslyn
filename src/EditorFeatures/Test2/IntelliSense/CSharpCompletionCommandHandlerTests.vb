@@ -2162,7 +2162,7 @@ class C
 
         <WorkItem(5487, "https://github.com/dotnet/roslyn/issues/5487")>
         <InlineData(CompletionImplementation.Legacy)>
-        <InlineData(CompletionImplementation.Modern, Skip:="https://github.com/dotnet/roslyn/issues/27453")>
+        <InlineData(CompletionImplementation.Modern)>
         <WpfTheory, Trait(Traits.Feature, Traits.Features.Completion)>
         Public Async Function TestCommitCharTypedAtTheBeginingOfTheFilterSpan(completionImplementation As CompletionImplementation) As Task
             Using state = TestStateFactory.CreateCSharpTestState(completionImplementation,
