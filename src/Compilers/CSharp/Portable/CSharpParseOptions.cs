@@ -212,6 +212,22 @@ namespace Microsoft.CodeAnalysis.CSharp
             return availableVersion >= requiredVersion;
         }
 
+#pragma warning disable RS0016 // Add public types and members to the declared API
+        public bool IsFeatureEnabled(int featureNum)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+        {
+            var feature = (MessageID)featureNum;
+
+            string featureFlag = feature.RequiredFeature();
+            if (featureFlag != null)
+            {
+                return Features.ContainsKey(featureFlag);
+            }
+            LanguageVersion availableVersion = LanguageVersion;
+            LanguageVersion requiredVersion = feature.RequiredVersion();
+            return availableVersion >= requiredVersion;
+        }
+
         public override bool Equals(object obj)
         {
             return this.Equals(obj as CSharpParseOptions);

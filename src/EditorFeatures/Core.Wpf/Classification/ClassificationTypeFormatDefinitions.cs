@@ -540,9 +540,38 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Classification
                 this.ForegroundColor = s_regexOtherEscapeColor;
             }
         }
-#endregion
 
-#region VB XML Literals - Attribute Name 
+        [Export(typeof(EditorFormatDefinition))]
+        [ClassificationType(ClassificationTypeNames = ClassificationTypeNames.NullabilityStatusNonNull)]
+        [Name(ClassificationTypeNames.NullabilityStatusNonNull)]
+        [UserVisible(true)]
+        [ExcludeFromCodeCoverage]
+        private class NullabilityStatusNonNullFormatDefinition : ClassificationFormatDefinition
+        {
+            private NullabilityStatusNonNullFormatDefinition()
+            {
+                this.DisplayName = "Nullability Status - NonNull";
+                this.ForegroundColor = Color.FromRgb(0x24, 0xa3, 0x1b);
+            }
+        }
+
+        [Export(typeof(EditorFormatDefinition))]
+        [ClassificationType(ClassificationTypeNames = ClassificationTypeNames.NullabilityStatusMaybeNull)]
+        [Name(ClassificationTypeNames.NullabilityStatusMaybeNull)]
+        [UserVisible(true)]
+        [ExcludeFromCodeCoverage]
+        private class NullabilityStatusMaybeNullFormatDefinition : ClassificationFormatDefinition
+        {
+            private NullabilityStatusMaybeNullFormatDefinition()
+            {
+                this.DisplayName = "Nullability Status - Maybe Null";
+                this.ForegroundColor = Color.FromRgb(0xF4, 0x68, 0x42);
+            }
+        }
+
+        #endregion
+
+        #region VB XML Literals - Attribute Name 
         [Export(typeof(EditorFormatDefinition))]
         [ClassificationType(ClassificationTypeNames = ClassificationTypeNames.XmlLiteralAttributeName)]
         [Name(ClassificationTypeNames.XmlLiteralAttributeName)]

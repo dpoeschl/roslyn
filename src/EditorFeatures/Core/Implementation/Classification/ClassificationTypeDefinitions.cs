@@ -238,6 +238,18 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Classification
         [Name(ClassificationTypeNames.RegexGrouping)]
         [BaseDefinition(PredefinedClassificationTypeNames.FormalLanguage)]
         internal readonly ClassificationTypeDefinition RegexGroupingTypeDefinition;
+
+        [Export]
+        [Name(ClassificationTypeNames.NullabilityStatusNonNull)]
+        [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
+        internal readonly ClassificationTypeDefinition NullabilityStatusNonNullTypeDefinition;
+
+        [Export]
+        [Name(ClassificationTypeNames.NullabilityStatusMaybeNull)]
+        [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
+        internal readonly ClassificationTypeDefinition NullabilityStatusMaybeNullTypeDefinition;
+
+
         #endregion
 
         #region VB XML Literals - Attribute Name 

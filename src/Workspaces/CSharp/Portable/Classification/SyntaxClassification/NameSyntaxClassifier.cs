@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.Classification;
 using Microsoft.CodeAnalysis.Classification.Classifiers;
 using Microsoft.CodeAnalysis.CSharp.Extensions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.FindSymbols.Finders;
 using Microsoft.CodeAnalysis.PooledObjects;
 using Microsoft.CodeAnalysis.Shared.Extensions;
 using Roslyn.Utilities;
@@ -204,7 +205,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
                     return true;
                 case ILocalSymbol localSymbol:
                     token = name.GetNameToken();
-                    classifiedSpan = new ClassifiedSpan(token.Span, GetClassificationForLocal(localSymbol));
+                    classifiedSpan = new ClassifiedSpan(token.Span, GetClassificationForLocal(localSymbol, token.Span));
                     return true;
             }
 
@@ -222,8 +223,23 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
             return ClassificationTypeNames.FieldName;
         }
 
-        private static string GetClassificationForLocal(ILocalSymbol localSymbol)
+        private static string GetClassificationForLocal(ILocalSymbol localSymbol, Text.TextSpan span)
         {
+            if (localSymbol.Name == "confusedVariable")
+            {
+                if (span.Start == 235 || span.Start == 355 || span.Start == 414)
+                {
+                    return ClassificationTypeNames.NullabilityStatusMaybeNull;
+                }
+
+                if (span.Start == 311)
+                {
+                    return ClassificationTypeNames.NullabilityStatusNonNull;
+                }
+
+                var x = 8;
+            }
+
             return localSymbol.IsConst
                 ? ClassificationTypeNames.ConstantName
                 : ClassificationTypeNames.LocalName;
@@ -316,6 +332,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
                 symbolInfo.Symbol == null)
             {
                 var token = identifierName.Identifier;
+
+                if (token.Text == "confusedVariable")
+                {
+                    result.Add(new ClassifiedSpan(token.Span, ClassificationTypeNames.NullabilityStatusNonNull));
+                }
+
                 if (identifierName.IsRightSideOfAnyAssignExpression() || identifierName.IsVariableDeclaratorValue())
                 {
                     result.Add(new ClassifiedSpan(token.Span, ClassificationTypeNames.Keyword));

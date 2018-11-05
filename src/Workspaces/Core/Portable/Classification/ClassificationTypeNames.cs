@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+using Microsoft.CodeAnalysis.Text;
+
 namespace Microsoft.CodeAnalysis.Classification
 {
     public static class ClassificationTypeNames
@@ -70,5 +72,8 @@ namespace Microsoft.CodeAnalysis.Classification
         public const string RegexText = "regex - text";
         public const string RegexSelfEscapedCharacter = "regex - self escaped character";
         public const string RegexOtherEscape = "regex - other escape";
+
+        internal const string NullabilityStatusNonNull = "nullability status - not null";
+        internal const string NullabilityStatusMaybeNull = "nullability status = maybe null";
     }
 }

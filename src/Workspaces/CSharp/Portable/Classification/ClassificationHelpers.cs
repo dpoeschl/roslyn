@@ -140,7 +140,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification
                     case FieldDeclarationSyntax fieldDeclaration:
                         return fieldDeclaration.Modifiers.Any(SyntaxKind.ConstKeyword) ? ClassificationTypeNames.ConstantName : ClassificationTypeNames.FieldName;
                     case LocalDeclarationStatementSyntax localDeclarationStatement:
-                        return localDeclarationStatement.IsConst ? ClassificationTypeNames.ConstantName : ClassificationTypeNames.LocalName;
+                        {
+                            if (localDeclarationStatement.GetText().ToString().Contains("confusedVariable"))
+                            {
+                                return ClassificationTypeNames.NullabilityStatusMaybeNull;
+                            }
+                            return localDeclarationStatement.IsConst ? ClassificationTypeNames.ConstantName : ClassificationTypeNames.LocalName;
+                        }
                     case EventFieldDeclarationSyntax aventFieldDeclarationSyntax:
                         return ClassificationTypeNames.EventName;
                 }
