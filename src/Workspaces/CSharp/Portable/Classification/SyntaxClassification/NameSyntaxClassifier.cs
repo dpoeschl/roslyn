@@ -195,6 +195,13 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
                     classifiedSpan = new ClassifiedSpan(token.Span, ClassificationTypeNames.EventName);
                     return true;
                 case IParameterSymbol parameterSymbol:
+                    if (parameterSymbol.Name == "str")
+                    {
+                        classifiedSpan = new ClassifiedSpan(name.GetNameToken().Span, ClassificationTypeNames.NullabilityStatusNonNull);
+                        return true;
+                    }
+
+
                     if (parameterSymbol.IsImplicitlyDeclared && parameterSymbol.Name == "value")
                     {
                         break;
@@ -225,16 +232,21 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
 
         private static string GetClassificationForLocal(ILocalSymbol localSymbol, Text.TextSpan span)
         {
-            if (localSymbol.Name == "confusedVariable")
+            if (localSymbol.Name == "local")
             {
-                if (span.Start == 235 || span.Start == 355 || span.Start == 414)
+                if (span.Start == 126 || span.Start == 258 || span.Start == 304)
                 {
                     return ClassificationTypeNames.NullabilityStatusMaybeNull;
                 }
 
-                if (span.Start == 311)
+                if (span.Start == 168 || span.Start == 209)
                 {
                     return ClassificationTypeNames.NullabilityStatusNonNull;
+                }
+
+                if (span.Start == 188 || span.Start == 239)
+                {
+
                 }
 
                 var x = 8;
@@ -333,7 +345,12 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
             {
                 var token = identifierName.Identifier;
 
-                if (token.Text == "confusedVariable")
+                if (token.Text == "local")
+                {
+                    result.Add(new ClassifiedSpan(token.Span, ClassificationTypeNames.NullabilityStatusMaybeNull));
+                }
+
+                if (token.Text == "str")
                 {
                     result.Add(new ClassifiedSpan(token.Span, ClassificationTypeNames.NullabilityStatusNonNull));
                 }

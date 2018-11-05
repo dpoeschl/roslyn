@@ -141,7 +141,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification
                         return fieldDeclaration.Modifiers.Any(SyntaxKind.ConstKeyword) ? ClassificationTypeNames.ConstantName : ClassificationTypeNames.FieldName;
                     case LocalDeclarationStatementSyntax localDeclarationStatement:
                         {
-                            if (localDeclarationStatement.GetText().ToString().Contains("confusedVariable"))
+                            if (localDeclarationStatement.GetText().ToString().Contains("local"))
                             {
                                 return ClassificationTypeNames.NullabilityStatusMaybeNull;
                             }
@@ -154,6 +154,10 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification
             }
             else if (token.Parent is ParameterSyntax parameterSyntax && parameterSyntax.Identifier == token)
             {
+                if (token.Text == "str")
+                {
+                    return ClassificationTypeNames.NullabilityStatusNonNull;
+                }
                 return ClassificationTypeNames.ParameterName;
             }
             else if (token.Parent is ForEachStatementSyntax forEachStatementSyntax && forEachStatementSyntax.Identifier == token)
