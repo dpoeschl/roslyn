@@ -108,6 +108,7 @@ class MyClass
                 isOkButtonEnabled:=True,
                 canMoveUp:=True,
                 canMoveDown:=False,
+                canEdit:=True,
                 permutation:={1, 0},
                 signatureDisplay:="public void M(string y, int x)")
 
@@ -137,6 +138,8 @@ class MyClass
             monitor.AddExpectation(Function() viewModel.RemoveAutomationText)
             monitor.AddExpectation(Function() viewModel.CanRestore)
             monitor.AddExpectation(Function() viewModel.RestoreAutomationText)
+            monitor.AddExpectation(Function() viewModel.CanEdit)
+            monitor.AddExpectation(Function() viewModel.EditAutomationText)
 
             viewModel.Remove()
 
@@ -146,6 +149,7 @@ class MyClass
                 isOkButtonEnabled:=True,
                 canMoveUp:=False,
                 canMoveDown:=True,
+                canEdit:=False,
                 permutation:={1},
                 signatureDisplay:="public void M(string y)")
 
@@ -166,7 +170,23 @@ class MyClass
             Dim viewModel = viewModelTestState.ViewModel
             VerifyOpeningState(viewModel, "public void M(int x, string y)")
 
+            Dim selectionChangedMonitor = New PropertyChangedTestMonitor(viewModel, strict:=True)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.CanMoveUp)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.MoveUpAutomationText)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.CanMoveDown)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.MoveDownAutomationText)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.CanRemove)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.RemoveAutomationText)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.CanRestore)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.RestoreAutomationText)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.CanEdit)
+            selectionChangedMonitor.AddExpectation(Function() viewModel.EditAutomationText)
+
             viewModel.SelectedIndex = 1
+
+            selectionChangedMonitor.VerifyExpectations()
+            selectionChangedMonitor.Detach()
+
 
             VerifyAlteredState(
                 viewModelTestState,
@@ -237,12 +257,40 @@ class MyClass
                 type:="int[,]")
         End Function
 
+        <Fact, Trait(Traits.Feature, Traits.Features.ChangeSignature)>
+        <WorkItem(8437, "https://github.com/dotnet/roslyn/issues/8437")>
+        Public Async Function ChangeSignature_VerifyParamsArrayFunctionality() As Tasks.Task
+            Dim markup = <Text><![CDATA[
+class MyClass
+{
+    public ref int $$M(int x, params int[] y)
+    {
+    }
+}"]]></Text>
+
+            Dim viewModelTestState = Await GetViewModelTestStateAsync(markup, LanguageNames.CSharp)
+            Dim viewModel = viewModelTestState.ViewModel
+
+            VerifyOpeningState(viewModel, "public ref int M(int x, params int[] y)")
+
+            viewModel.SelectedIndex = 1
+
+            VerifyAlteredState(viewModelTestState,
+                canMoveUp:=False,
+                canMoveDown:=False,
+                canRemove:=True,
+                canEdit:=False)
+        End Function
+
         Private Sub VerifyAlteredState(
            viewModelTestState As ChangeSignatureViewModelTestState,
            Optional monitor As PropertyChangedTestMonitor = Nothing,
            Optional isOkButtonEnabled As Boolean? = Nothing,
            Optional canMoveUp As Boolean? = Nothing,
            Optional canMoveDown As Boolean? = Nothing,
+           Optional canRemove As Boolean? = Nothing,
+           Optional canRestore As Boolean? = Nothing,
+           Optional canEdit As Boolean? = Nothing,
            Optional permutation As Integer() = Nothing,
            Optional signatureDisplay As String = Nothing)
 
@@ -262,6 +310,18 @@ class MyClass
 
             If canMoveDown IsNot Nothing Then
                 Assert.Equal(canMoveDown, viewModel.CanMoveDown)
+            End If
+
+            If canRemove IsNot Nothing Then
+                Assert.Equal(canRemove, viewModel.CanRemove)
+            End If
+
+            If canRestore IsNot Nothing Then
+                Assert.Equal(canRestore, viewModel.CanRestore)
+            End If
+
+            If canEdit IsNot Nothing Then
+                Assert.Equal(canEdit, viewModel.CanEdit)
             End If
 
             If permutation IsNot Nothing Then
