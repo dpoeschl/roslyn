@@ -152,6 +152,11 @@
         <target state="translated">パブリックでないメソッド</target>
         <note />
       </trans-unit>
+      <trans-unit id="Parameter_Details">
+        <source>Parameter Details</source>
+        <target state="new">Parameter Details</target>
+        <note />
+      </trans-unit>
       <trans-unit id="Parameter_preferences_colon">
         <source>Parameter preferences:</source>
         <target state="translated">パラメーターの優先順位:</target>
