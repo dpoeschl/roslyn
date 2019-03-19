@@ -153,6 +153,15 @@ namespace Microsoft.VisualStudio.LanguageServices {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Add.
+        /// </summary>
+        internal static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add a naming rule.
         /// </summary>
         internal static string Add_a_naming_rule {
@@ -848,15 +857,6 @@ namespace Microsoft.VisualStudio.LanguageServices {
         internal static string DocumentPath_is_illegal {
             get {
                 return ResourceManager.GetString("DocumentPath_is_illegal", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Edit.
-        /// </summary>
-        internal static string Edit {
-            get {
-                return ResourceManager.GetString("Edit", resourceCulture);
             }
         }
         

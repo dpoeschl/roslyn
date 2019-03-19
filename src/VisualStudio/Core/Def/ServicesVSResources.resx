@@ -1201,14 +1201,15 @@ I agree to all of the foregoing:</value>
   <data name="Use_enhanced_colors_for_C_and_Basic" xml:space="preserve">
     <value>Use enhanced colors for C# and Basic</value>
   </data>
-  <data name="Edit" xml:space="preserve">
-    <value>_Edit</value>
-  </data>
   <data name="Edit_0" xml:space="preserve">
     <value>Edit {0}</value>
     <comment>{0} is a parameter description</comment>
   </data>
   <data name="Parameter_Details" xml:space="preserve">
     <value>Parameter Details</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>_Add</value>
+    <comment>Adding an element to a list</comment>
   </data>
 </root>

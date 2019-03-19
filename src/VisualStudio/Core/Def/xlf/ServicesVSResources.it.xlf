@@ -2,6 +2,11 @@
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.2" xsi:schemaLocation="urn:oasis:names:tc:xliff:document:1.2 xliff-core-1.2-transitional.xsd">
   <file datatype="xml" source-language="en" target-language="it" original="../ServicesVSResources.resx">
     <body>
+      <trans-unit id="Add">
+        <source>_Add</source>
+        <target state="new">_Add</target>
+        <note>Adding an element to a list</note>
+      </trans-unit>
       <trans-unit id="Add_to_current_file">
         <source>Add to _current file</source>
         <target state="translated">Aggiungi al file _corrente</target>
@@ -65,11 +70,6 @@
       <trans-unit id="Colorize_regular_expressions">
         <source>Colorize regular expressions</source>
         <target state="translated">Colora espressioni regolari</target>
-        <note />
-      </trans-unit>
-      <trans-unit id="Edit">
-        <source>_Edit</source>
-        <target state="new">_Edit</target>
         <note />
       </trans-unit>
       <trans-unit id="Edit_0">

@@ -50,7 +50,7 @@
       <Link>InternalUtilities\ShadowCopyAnalyzerAssemblyLoader.cs</Link>
     </Compile>
     <Compile Include="..\..\..\ExpressionEvaluator\Core\Source\ExpressionCompiler\DkmExceptionUtilities.cs" Link="Implementation\EditAndContinue\Interop\DkmExceptionUtilities.cs" />
-    <Compile Update="Implementation\ChangeSignature\ParameterDetailsDialog.xaml.cs">
+    <Compile Update="Implementation\ChangeSignature\AddParameterDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Implementation\PickMembers\PickMembersDialog.xaml.cs">
@@ -217,12 +217,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Implementation\ChangeSignature\AddParameterDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Implementation\ChangeSignature\ChangeSignatureDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Implementation\ChangeSignature\ParameterDetailsDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Implementation\PickMembers\PickMembersDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
