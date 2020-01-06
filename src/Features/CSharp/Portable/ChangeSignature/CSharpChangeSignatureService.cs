@@ -538,7 +538,7 @@ namespace Microsoft.CodeAnalysis.CSharp.ChangeSignature
         }
 
         private SeparatedSyntaxList<T> PermuteDeclaration<T>(
-            SeparatedSyntaxList<T> list, 
+            SeparatedSyntaxList<T> list,
             SignatureChange updatedSignature) where T : SyntaxNode
         {
             var originalParameters = updatedSignature.OriginalConfiguration.ToListOfParameters();
