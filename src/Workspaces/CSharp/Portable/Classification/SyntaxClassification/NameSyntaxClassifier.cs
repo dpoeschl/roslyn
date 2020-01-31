@@ -233,7 +233,7 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
                     return true;
                 case ILocalSymbol localSymbol:
                     token = name.GetNameToken();
-                    classifiedSpan = new ClassifiedSpan(token.Span, GetClassificationForLocal(localSymbol));
+                    classifiedSpan = new ClassifiedSpan(token.Span, GetClassificationForLocal(semanticModel, name, localSymbol));
                     return true;
                 case ILabelSymbol labelSymbol:
                     token = name.GetNameToken();
@@ -255,8 +255,25 @@ namespace Microsoft.CodeAnalysis.CSharp.Classification.Classifiers
             return ClassificationTypeNames.FieldName;
         }
 
-        private static string GetClassificationForLocal(ILocalSymbol localSymbol)
+        private static string GetClassificationForLocal(SemanticModel semanticModel, SyntaxNode name, ILocalSymbol localSymbol)
         {
+            if (semanticModel.GetNullableContext(name.SpanStart) == NullableContext.Enabled)
+            {
+                var typeInfo = semanticModel.GetTypeInfo(name, CancellationToken.None);
+
+                if (typeInfo.Type?.IsValueType == false)
+                {
+                    if (typeInfo.Nullability.FlowState == NullableFlowState.NotNull)
+                    {
+                        return ClassificationTypeNames.NullabilityStatusNonNull;
+                    }
+                    else if (typeInfo.Nullability.FlowState == NullableFlowState.MaybeNull)
+                    {
+                        return ClassificationTypeNames.NullabilityStatusMaybeNull;
+                    }
+                }
+            }
+
             return localSymbol.IsConst
                 ? ClassificationTypeNames.ConstantName
                 : ClassificationTypeNames.LocalName;

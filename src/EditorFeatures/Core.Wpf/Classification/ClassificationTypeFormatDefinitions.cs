@@ -1028,5 +1028,33 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Classification
             }
         }
         #endregion
+
+        [Export(typeof(EditorFormatDefinition))]
+        [ClassificationType(ClassificationTypeNames = ClassificationTypeNames.NullabilityStatusNonNull)]
+        [Name(ClassificationTypeNames.NullabilityStatusNonNull)]
+        [UserVisible(true)]
+        [ExcludeFromCodeCoverage]
+        private class NullabilityStatusNonNullFormatDefinition : ClassificationFormatDefinition
+        {
+            private NullabilityStatusNonNullFormatDefinition()
+            {
+                this.DisplayName = "Nullability Status - NonNull";
+                this.ForegroundColor = Color.FromRgb(0x24, 0xa3, 0x1b);
+            }
+        }
+
+        [Export(typeof(EditorFormatDefinition))]
+        [ClassificationType(ClassificationTypeNames = ClassificationTypeNames.NullabilityStatusMaybeNull)]
+        [Name(ClassificationTypeNames.NullabilityStatusMaybeNull)]
+        [UserVisible(true)]
+        [ExcludeFromCodeCoverage]
+        private class NullabilityStatusMaybeNullFormatDefinition : ClassificationFormatDefinition
+        {
+            private NullabilityStatusMaybeNullFormatDefinition()
+            {
+                this.DisplayName = "Nullability Status - Maybe Null";
+                this.ForegroundColor = Color.FromRgb(0xF4, 0x68, 0x42);
+            }
+        }
     }
 }

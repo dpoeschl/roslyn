@@ -348,5 +348,15 @@ namespace Microsoft.CodeAnalysis.Editor.Implementation.Classification
         [BaseDefinition(PredefinedClassificationTypeNames.Operator)]
         internal readonly ClassificationTypeDefinition OperatorOverloadTypeDefinition;
         #endregion
+
+        [Export]
+        [Name(ClassificationTypeNames.NullabilityStatusNonNull)]
+        [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
+        internal readonly ClassificationTypeDefinition NullabilityStatusNonNullTypeDefinition;
+
+        [Export]
+        [Name(ClassificationTypeNames.NullabilityStatusMaybeNull)]
+        [BaseDefinition(PredefinedClassificationTypeNames.Identifier)]
+        internal readonly ClassificationTypeDefinition NullabilityStatusMaybeNullTypeDefinition;
     }
 }
